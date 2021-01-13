@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/estilos.css" />
+    <script type="module" src="apuntesTema.js"></script>
+    <script src="../js/cerrarSesion.js"></script>
+</head>
+<body>
+
+<cabecera></cabecera>
+
+<!-- =================================================== -->
+      
+<div id="modalCrearEditar" class="modal fade in" data-backdrop="static" data-keyboard="false" tabindex="-1" style="overflow-y: scroll;" role="dialog">
+    <div class="modal-dialog modal-lg" style="width: 90%;">
+
+        <div class="modal-content">
+
+            <form onsubmit="guardar(event)"> 
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h1 class="modal-title"> Crear/Editar </h1>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row"> 
+
+                        <div class="col-md-4"> 
+                            <div class="form-group"> 
+                                <label class="control-label" for="titulo"> Título </label> 
+                                <input type="text" 
+                                onkeyup="construirObjeto(event, null)" name="titulo" 
+                                class="apuntesTema form-control" autocomplete="off" />
+
+                                <!-- <input type="text" onkeyup="apuntesTema[this.name] = this.value" name="titulo" class="apuntesTema form-control" autocomplete="off" />  -->
+                            </div> 
+                        </div> 
+                        <div class="col-md-4"> 
+                            <div class="form-group"> 
+                                <label class="control-label" for="apuntesCategoria"> Categoría </label> 
+                                <!-- <input type="text" name="apuntesCategoria" id="apuntesCategoria_select2" class="apuntesTema" /> --> 
+								
+								<div> 
+									<input type="text" style="display: none; width: 100%;" class="form-control" /> 
+                                    
+                                    <select onclick="inicializarSelectBuscador(event)" rutaWebApi="/ApuntesTema/llenarSelect2" 
+									onchange="construirObjeto(event, {id: this.value, toString: this.options[this.selectedIndex].text})" 
+									name="apuntesCategoria" entidad="ApuntesCategoria" atributoBuscado="titulo" class="apuntesTema form-control"> 
+										<option value=""> - Seleccione - </option> 
+									</select> 
+
+									<!-- <select onclick="inicializarSelectBuscador(event)" rutaWebApi="/ApuntesTema/llenarSelect2" 
+									onchange="apuntesTema.apuntesCategoria.id = this.value; apuntesTema.apuntesCategoria.toString = this.options[this.selectedIndex].text" 
+									name="apuntesCategoria" entidad="ApuntesCategoria" atributoBuscado="titulo" class="apuntesTema form-control"> 
+										<option value=""> - Seleccione - </option> 
+									</select>  -->
+								</div> 
+					
+                            </div> 
+                        </div> 
+            
+                    </div> <!-- Fin <div class="row"> -->
+
+                    <!-- Inicio referencias cruzadas de la entidad ApuntesTema --> 
+
+                    <br/>
+                    <button type="button" onclick="agregarNuevoApuntesDetalleTema()" class="btn btn-success"> <span>+</span> Agregar Nuevo Detalle al Tema </button> <br/> 
+                        
+                    <br/> 
+                    <h4> Listado de Detalles pertenecientes al Tema </h4> 
+            
+                    <table id="tablaApuntesDetalleTema" class="table table-bordered"> 
+                        <thead> 
+                            <tr> 
+                                <!-- <th> Id </th>  -->
+                                <th style="width: 20%;"> Título </th> 
+                                <th style="width: 70%;"> Contenido </th> 
+                                <th style="width: 10%;"> </th> 
+                            </tr> 
+                        </thead> 
+                        <tbody> 
+            
+                        </tbody> 
+                    </table> 
+
+                    <!-- Fin referencias cruzadas de la entidad ApuntesTema --> 
+            
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary"> Guardar </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button>
+                </div>
+
+            </form> 
+
+        </div>  <!-- <div class="modal-content"> -->
+    </div>
+</div>
+
+
+<div>  <!-- Este era el div listar -->
+
+    <br/> 
+    <button name="crear" onclick="crearNuevo()" data-toggle="modal" data-target="#modalCrearEditar" class="btn btn-success"> <span>+</span> Agregar Nuevo Tema </button> <br/> 
+
+    <br/><br/>
+    <!-- Inicio buscador -->
+    <div class="row"> 
+        <div class="col-md-4"> 
+            <div class="form-group"> 
+                <label class="control-label" for="apuntesCategoria"> Categoría </label> 
+                <!-- <input type="text" id="buscador_apuntesCategoria_select2" /> -->
+	
+				<div> 
+					<input type="text" style="display: none; width: 100%;" class="form-control" /> 
+
+					<select id="apuntesCategoriaId" onclick="inicializarSelectBuscador(event)" rutaWebApi="/ApuntesTema/llenarSelect2" 
+					onchange="resetearPaginacion(); obtenerListaPrincipal()" entidad="ApuntesCategoria" atributoBuscado="titulo" class="form-control"> 
+						<option value=""> -Todos- </option> 
+					</select> 
+				</div> 
+								
+            </div> 
+        </div> 
+        <div class="col-md-4"> 
+            <div class="form-group"> 
+
+                <label class="control-label" for="titulo"> Título </label> 
+                <input onkeyup="resetearPaginacion(); obtenerListaPrincipal()" type="text" id="tituloId" class="form-control" autocomplete="off" /> 
+
+            </div> 
+        </div> 
+    </div> 
+    <!-- Fin buscador -->
+
+    <br/> 
+    <h4> Listado de Temas </h4>
+    
+	<!-- Inicio nav paginacion --> 
+	<br/> 
+
+	<div id="nav_paginacion" style="display: none"> 
+		<div class="row"> 
+			<div class="col-md-1"> 
+				<button id="btn_pagina_anterior" onclick="obtenerListaPrincipal(paginaActual - 1)" type="button" class="btn btn-default"> 
+					<span> < </span> Anterior 
+				</button> 
+			</div> 
+			<div class="col-md-1"> 
+				<button id="btn_pagina_siguiente" onclick="obtenerListaPrincipal(paginaActual + 1)" type="button" class="btn btn-default"> 
+					Siguiente <span> > </span> 
+				</button> 
+			</div> 
+		</div> 
+	</div> 
+
+	<br/> 
+	<!-- Fin nav paginacion --> 
+    
+    <div class="table-responsive"> <!-- Contenedor para que la tabla sea responsiva --> 
+        <table id="tablaPrincipal" class="table table-bordered"> 
+            <thead> 
+                <tr> 
+                    <th> Id </th> 
+                    <th> Título </th> 
+                    <th> Categoria </th> 
+                    <th> </th> 
+                    <th> </th> 
+                </tr> 
+            </thead> 
+            <tbody> 
+                
+            </tbody> 
+        </table> 
+    </div>  <!-- Fin Contenedor para que la tabla sea responsiva --> 
+
+</div>
+
+
+<!-- =================================================== -->
+
+<piePagina></piePagina>
+
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <!-- <link rel="stylesheet" href="css/estilos.css" /> -->
+
+    <!-- 
+    Investigar esto: Es usar un CDN de Babel
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script> 
+    https://stackoverflow.com/questions/44490627/how-to-do-import-export-a-class-in-vanilla-javascript-js
+    -->
+
+    <!-- <script type="module" src="main.js"></script> -->
+    
+    <script type="module">
+
+      import * as funcionesGenericas from './modules/funcionesGenericas.js';
+      import * as config from './modules/configuracionesProyecto.js';
+
+      var url = config.configuracionesProyecto.rutaWebApi; 
+      
+      const realizarLogin = (evento) => 
+      {
+        evento.preventDefault();
+        funcionesGenericas.mostrarLoadingSpinner()
+        
+        var form = new FormData(evento.target);
+        var username = form.get("username");
+        var password = form.get("password");
+        
+        if (username == "") {  return alert("Es necesario colocar el username");  }
+        if (password == "") {  return alert("Es necesario colocar el password");  }
+        
+        fetch(url + "/login", {
+          method: "POST",
+          headers: {"Accept": "application/json", "Content-Type": "application/json"},
+          body: JSON.stringify({"username": username, "password": password})
+        })
+        .then(response => 
+        {
+          if(response.ok) 
+          {
+            response.json().then(data => {
+              //console.log(data);
+              localStorage.setItem("token_app_apuntes", data.token);	
+              window.location.href = "apuntesTema/";  
+            });
+          } 
+          else {
+            response.text().then(textoError => alert(textoError));
+          }
+        })
+        .catch(error => {
+          alert(JSON.stringify(error));
+        })
+        .finally(c=> {
+          funcionesGenericas.ocultarLoadingSpinner();
+        });
+        
+      };
+
+      window.realizarLogin = realizarLogin;  // Hace disponible la funcion en el html
+      
+    </script>
+
+  </head>
+  <body>
+      
+    <div style="display: none" id="loading-spinner"></div> <!-- Imagen de carga de datos -->
+
+    <div class="container theme-showcase" role="main">
+
+      <form method="POST" enctype="multipart/form-data" onsubmit="realizarLogin(event)">
+    
+        <br/><br/>
+    
+        <div class="row"> 
+          <div class="col-md-2"> 
+            <div class="form-group"> 
+    
+              <label class="control-label" for="username"> Usuario </label> 
+              <input type="text" name="username" class="form-control" ngModel /> 
+    
+            </div> 
+          </div> 
+          <div class="col-md-2"> 
+            <div class="form-group"> 
+    
+              <label class="control-label" for="password"> Password </label> 
+              <input type="password" name="password" class="form-control" ngModel /> 
+    
+            </div> 
+          </div> 
+          <div class="col-md-12">
+            <div class="form-group">   
+              <button type="submit" class="btn btn-success "> Entrar </button>
+            </div>
+          </div>
+        </div> 
+    
+      </form>
+    
+    </div>
+
+  </body>
+</html>
