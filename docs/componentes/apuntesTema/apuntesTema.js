@@ -1,40 +1,34 @@
 
-import ColocarTemplate from '../modules/colocarTemplate.js';
-import {mostrarLoadingSpinner, ocultarLoadingSpinner} from '../modules/funcionesGenericas.js';
-import {configuracionesProyecto} from '../modules/configuracionesProyecto.js';
-import {selectBuscador} from '../modules/buscadorPaginado.js';
-import '../js/jquery.js';
-import '../js/bootstrap.min.js';
-import '../js/tinymce.min.js';
+import { CargaVista } from "../cargaVista.js";
+import { mostrarLoadingSpinner, ocultarLoadingSpinner } from "../../funciones/funcionesGenericas.js";
+import { configuracionesProyecto } from '../../configuraciones/configuracionesProyecto.js';
 
 
-var apuntesTema = {};
-var listasBuscador = []; 
-
-var url = configuracionesProyecto.rutaWebApi; 
-// var url = "http://localhost:8777";    
-
-var operacion = "";            // Fue modificado
-
-var paginaActual = 0;    // Atributo opcional en caso de usar Paginación 
-var totalPaginas = 0;    // Atributo opcional en caso de usar Paginación 
-
-
-class ApuntesTema extends ColocarTemplate
+export class ApuntesTema extends CargaVista
 {
-    constructor() 
+    constructor()
     {
-        super();  // Llama al constructor de la clase padre
+        super();
 
-        // Coloca los metodos y variables para que esten disponibles desde el html
-        Object.getOwnPropertyNames(ApuntesTema.prototype).forEach(c=> { window[c] = this[c]; });
-        window["paginaActual"] = paginaActual;
+        this.url = configuracionesProyecto.rutaWebApi;
 
-        // console.log($("#loading-spinner"));  // Funciona
+        this.apuntesTema = {};
+        this.listasBuscador = [];             
+        this.operacion = "";       
+        this.paginaActual = 0;    // Atributo opcional en caso de usar Paginación 
+        this.totalPaginas = 0;    // Atributo opcional en caso de usar Paginación 
 
-        obtenerListaPrincipal();
+        for (var prop in this) { window[prop] = this[prop]; }                                          // Coloca los atributos de la clase para que esten disponibles desde el html
+        Object.getOwnPropertyNames(this.constructor.prototype).forEach(c=> { window[c] = this[c]; });  // Coloca los metodos de la clase para que esten disponibles desde el html
+
+        this.obtenerListaPrincipal();
+        this.cargarVista();
     }
 
+    destructor() {
+        for (var prop in this) { delete window[prop]; }                                             // Remueve los atributos de la clase para que no queden en la ventana
+        Object.getOwnPropertyNames(this.constructor.prototype).forEach(c=> { delete window[c]; });  // Remueve los metodos de la clase para que no queden en la ventana
+    }
 
     inicializarSelectBuscador(evento)  // Convertir select normal en un select buscador con paginacion  
     { 
@@ -54,6 +48,7 @@ class ApuntesTema extends ColocarTemplate
         } 
     } 
 
+
     obtenerConsultaBuscador() 
     { 
         var tituloId = document.getElementById("tituloId"); 
@@ -72,13 +67,8 @@ class ApuntesTema extends ColocarTemplate
 
 
     // Forma opcional en caso de usar Paginación 
-    obtenerListaPrincipal(pagina = null)  // Obtener lista de ApuntesTema de la Web Api 
+    obtenerListaPrincipal()  // Obtener lista de ApuntesTema de la Web Api 
     { 
-        if (pagina != null) {                       // NUEVO
-            paginaActual = pagina;                  // NUEVO
-            window["paginaActual"] = paginaActual;  // NUEVO
-        }
-
         var registrosPorPagina = 10; 
         var inicio = paginaActual * registrosPorPagina; 
 
@@ -108,7 +98,7 @@ class ApuntesTema extends ColocarTemplate
                         document.getElementById("btn_pagina_anterior").disabled = (paginaActual == 0) ? true : false; 
                         document.getElementById("btn_pagina_siguiente").disabled = (paginaActual >= totalPaginas) ? true : false; 
                     } 
-                    else {  
+                    else {  // AGREGAR A GENERADOR DE CODIGO OK.
                         document.getElementById("nav_paginacion").style.display = "none";    
                     }
 
@@ -141,21 +131,14 @@ class ApuntesTema extends ColocarTemplate
 
     } 
 
+    resetearPaginacion() 
+    { 
+        paginaActual = 0; 
+        totalPaginas = 0; 
+    } 
 
-    construirObjeto(evento = null, jsonAtributosEntidadPadre = null)
+    construirObjeto()
     {
-        if (evento != null)  // Si desde el html se desea crear/modificar el objeto de tipo ApuntesTema
-        {
-            if (jsonAtributosEntidadPadre == null) {
-                apuntesTema[evento.target.name] = evento.target.value;  // Atributo comun
-            }
-            else {
-                for (var prop in jsonAtributosEntidadPadre) {  
-                    apuntesTema[evento.target.name][prop] = jsonAtributosEntidadPadre[prop];  // Atributo fk
-                }
-            }
-        }
-
         Array.from(document.getElementsByClassName("apuntesTema")).forEach(c => 
         {
             if (c.name != undefined) 
@@ -227,21 +210,18 @@ class ApuntesTema extends ColocarTemplate
                 });
             }
         });
-
-        window["apuntesTema"] = apuntesTema;  // Asi el objeto es visible desde la vista    NUEVO
     }
 
-   
     crearNuevo()  // Iniciar creación de nuevo ApuntesTema 
     { 
         operacion = "crear";   // NUEVO
-    
+
         apuntesTema = { 
             titulo: "", 
-            apuntesCategoria: {"id": "", "toString": ""},  // Foreign key       
+            apuntesCategoria: {"id": "", "toString": ""},  // Foreign key        CAMBIAR ESTO EN EL GENERADOR OK. 
             listaApuntesDetalleTema: [], 
         }; 
-    
+
         construirObjeto();  // NUEVO
     } 
 
@@ -292,7 +272,7 @@ class ApuntesTema extends ColocarTemplate
         // Se validan los atributos de la entidad 
 
         if (["", null].includes(apuntesTema.titulo)) return "El campo titulo no posee un valor"; 
-        if (["", null].includes(apuntesTema.apuntesCategoria.id)) return "El campo de tipo ApuntesCategoria no está seleccionado";   
+        if (["", null].includes(apuntesTema.apuntesCategoria.id)) return "El campo de tipo ApuntesCategoria no está seleccionado";   // CAMBIAR ESTO EN EL GENERADOR OK.
 
         // Se validan las referencias cruzadas de la entidad ApuntesDetalleTema 
 
@@ -308,7 +288,6 @@ class ApuntesTema extends ColocarTemplate
         
         return ""; 
     } 
-
 
     editar(id)  // Obtener ApuntesTema de la Web Api por su id 
     { 
@@ -371,6 +350,7 @@ class ApuntesTema extends ColocarTemplate
         } 
     } 
 
+
     //====================================================================================================>>>>>> 
     // Control de referencias cruzadas de la entidad ApuntesDetalleTema 
 
@@ -380,34 +360,29 @@ class ApuntesTema extends ColocarTemplate
             titulo: "", 
             contenido: "", 
         }); 
-        construirObjeto(); 
+        construirObjeto(); // NUEVO
     } 
 
     actualizarApuntesDetalleTema(evento, indice)  // Actualizar detalle de tipo ApuntesDetalleTema que pertenece a ApuntesTema 
     { 
-        var posicion = apuntesTema["listaApuntesDetalleTema"][indice];  
-        posicion[evento.target.name] = evento.target.value;             
+        var posicion = apuntesTema["listaApuntesDetalleTema"][indice];  // NUEVO
+        posicion[evento.target.name] = evento.target.value;             // NUEVO
     } 
 
     quitarApuntesDetalleTema(indice)  // Quitar detalle de tipo ApuntesDetalleTema que pertenece a ApuntesTema 
     { 
-        apuntesTema["listaApuntesDetalleTema"].splice(indice, 1);   
-        construirObjeto();                               
+        apuntesTema["listaApuntesDetalleTema"].splice(indice, 1);   // NUEVO
+        construirObjeto();                               // NUEVO
     } 
 
     //====================================================================================================>>>>>> 
+
+    cargarVista()
+    {
+        this.cargarHtml({ rutaArchivo: "apuntesTema/index.html" }); 
+
+        //this.cargarHtml({textoHtml: "aaaaaaaaaaaa"});
+    }
     
-}
+};
 
-new ApuntesTema();
-
-//==============================================================>>>>>
-
-/*
-let instancia = new MiClase();
-
-Object.getOwnPropertyNames(MiClase.prototype).forEach(c=> { 
-    console.log(c);
-    window[c] = instancia[c];
-});
-*/

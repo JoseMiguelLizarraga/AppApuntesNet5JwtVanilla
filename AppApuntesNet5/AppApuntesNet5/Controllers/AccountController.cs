@@ -127,7 +127,7 @@ fetch("https://localhost:44322/Account/Create", {
 	method: "POST",
 	headers: {"Accept": "application/json", "Content-Type": "application/json"},
 	body: JSON.stringify({
-      "username": "tallerintegrasoft@gmail.com",
+      "username": "ejemplo@gmail.com",
       "password": "MyN3wP@ssw0rd"
     })
 })
@@ -151,7 +151,7 @@ fetch("https://localhost:44322/login", {
 	method: "POST",
 	headers: {"Accept": "application/json", "Content-Type": "application/json"},
 	body: JSON.stringify({
-      "username": "tallerintegrasoft@gmail.com",
+      "username": "ejemplo@gmail.com",
       "password": "MyN3wP@ssw0rd"
     })
 })

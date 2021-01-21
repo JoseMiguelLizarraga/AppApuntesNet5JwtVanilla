@@ -1,6 +1,7 @@
 
 
-function selectBuscador(datos)
+
+const selectBuscador = (datos) =>
 {
 	var busqueda = "";   			
 	var consulta = datos["params"];
@@ -415,7 +416,9 @@ function selectBuscador(datos)
 		}
 	});
 
+
 }
 
 
-export { selectBuscador };
+
+export { selectBuscador }

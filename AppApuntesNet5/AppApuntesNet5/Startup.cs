@@ -34,13 +34,17 @@ namespace AppApuntesNet5
         public void ConfigureServices(IServiceCollection services)
         {
             //===============================================================>>>>>
-            /* Este es el servicio para agregar entity framework, para que podamos inyectar el 
-            ApplicationDbContext a traves de inyeccion de dependencia en los controladores
-            La cadena de conexion se puede poner aca pero es mala practica. La cadena de conexion 
-            se pone en este caso en el appsettings.json */
+            // La cadena de conexion se pone en este caso en el appsettings.json
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"))
+            // SQL Server
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"))
+            //);
+
+            // MySQL
+            string mySqlConnectionStr = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContextPool<ApplicationDbContext>(options => 
+                options.UseMySql(mySqlConnectionStr, ServerVersion.AutoDetect(mySqlConnectionStr))
             );
 
             //==============================================>>>>>

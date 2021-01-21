@@ -1,0 +1,176 @@
+<style>
+
+	.ver_contenido_detalle_tema {  background-color: lightblue; min-width: 40px; min-height: 27px; border-radius: 7px; text-align: center; cursor: pointer;  }
+	.foto_detalle_tema {  height: 40px; width: 40px; cursor: pointer;  }
+</style>
+
+
+<div id="modalCrearEditar" class="modal fade in" data-backdrop="static" data-keyboard="false" tabindex="-1" style="overflow-y: scroll;" role="dialog"> 
+	<div class="modal-dialog modal-lg" style="width: 90%;"> 
+		<div class="modal-content"> 
+			<form onsubmit="guardar(event)"> 
+
+				<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button> 
+					<h3 class="modal-title"> Crear/Editar </h3> 
+				</div> 
+
+				<div class="modal-body"> 
+					<div class="row"> 
+
+						<div class="col-md-4"> 
+							<div class="form-group"> 
+								<label class="control-label" for="titulo"> titulo </label> 
+								<input type="text" onkeyup="apuntesDetalleTema[this.name] = this.value" name="titulo" class="apuntesDetalleTema form-control" autocomplete="off" /> 
+							</div> 
+						</div> 
+						<div class="col-md-4"> 
+							<div class="form-group"> 
+								<label class="control-label" for="contenido"> contenido </label> 
+								
+								<textarea onkeyup="apuntesDetalleTema[this.name] = this.value" name="contenido" class="apuntesDetalleTema form-control"></textarea>
+								<!-- <input type="text" onkeyup="apuntesDetalleTema[this.name] = this.value" name="contenido" class="apuntesDetalleTema form-control" /> --> 
+								
+							</div> 
+						</div> 
+						<div class="col-md-4"> 
+							<div class="form-group"> 
+								<label class="control-label" for="apuntesTema"> apuntesTema </label> 
+								<!-- <input type="text" name="apuntesTema" id="apuntesTema" class="apuntesDetalleTema" /> --> 
+								
+								<div> 
+									<input type="text" style="display: none; width: 100%;" class="form-control" /> 
+
+									<select name="apuntesTema" id="apuntesTema" class="apuntesDetalleTema form-control"> 
+										<option value=""> - Seleccione - </option> 
+									</select> 
+								</div> 
+								
+							</div> 
+						</div> 	
+						<div class="col-md-4"> 
+							<div class="form-group"> 
+								<label class="control-label" for="rutaFoto"> rutaFoto </label> 
+								<input type="text" onkeyup="apuntesDetalleTema[this.name] = this.value" name="rutaFoto" class="apuntesDetalleTema form-control" /> 
+							</div> 
+						</div> 
+
+					</div> <!-- Fin <div class="row"> --> 
+					<!-- Inicio referencias cruzadas de la entidad ApuntesDetalleTema --> 
+
+					<!-- Fin referencias cruzadas de la entidad ApuntesDetalleTema --> 
+
+				</div> 
+				<div class="modal-footer"> 
+					<button type="submit" class="btn btn-primary"> Guardar </button> 
+					<button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button> 
+				</div> 
+			</form> 
+
+		</div> 
+	</div> 
+</div> 
+
+<div> 
+
+	<br/> 
+
+	<button name="crear" onclick="crearNuevo()" data-toggle="modal" data-target="#modalCrearEditar" class="btn btn-success"> <span>+</span> Agregar Nuevo ApuntesDetalleTema </button> <br/> 
+
+	<br/><br/> 
+	<!-- Filtro busqueda --> 
+
+	<div class="row"> 
+		<div class="col-md-4"> 
+			<div class="form-group"> 
+
+				<label class="control-label" for="titulo"> titulo </label> 
+				<input onkeyup="resetearPaginacion(); obtenerListaPrincipal()" type="text" id="tituloId" class="form-control" /> 
+
+			</div> 
+		</div> 
+		<div class="col-md-4"> 
+			<div class="form-group"> 
+
+				<label class="control-label" for="contenido"> contenido </label> 
+				<input onkeyup="resetearPaginacion(); obtenerListaPrincipal()" type="text" id="contenidoId" class="form-control" /> 
+
+			</div> 
+		</div> 
+		<div class="col-md-4">  <!-- Agregado -->
+            <div class="form-group"> 
+                <label class="control-label" for="apuntesCategoria"> Categoría </label> 
+                <!-- <input type="text" id="buscador_apuntesCategoria_select2" /> -->
+
+				<div> 
+					<input type="text" style="display: none; width: 100%;" class="form-control" /> 
+
+					<select id="apuntesCategoriaId" class="form-control"> 
+						<option value=""> -Todos- </option> 
+					</select> 
+				</div> 
+	
+            </div> 
+        </div> 
+		<div class="col-md-4"> 
+			<div class="form-group"> 
+
+				<label class="control-label" for="apuntesTema"> apuntesTema </label> 
+				<!-- <input type="text" id="buscador_apuntesTema_select2" /> --> 
+	
+				<div> 
+					<input type="text" style="display: none; width: 100%;" class="form-control" /> 
+
+					<select id="apuntesTemaId" class="form-control"> 
+						<option value=""> -Todos- </option> 
+					</select> 
+				</div> 
+				
+			</div> 
+		</div> 
+	</div> 
+
+	<!-- Fin filtro busqueda --> 
+
+	<br/> 
+	<h4> Listado de ApuntesDetalleTema </h4> 
+
+	<!-- Inicio nav paginacion --> 
+	<br/> 
+
+	<div id="nav_paginacion" style="display: none"> 
+		<div class="row"> 
+			<div class="col-md-1"> 
+				<button id="btn_pagina_anterior" onclick="paginaActual = paginaActual - 1; obtenerListaPrincipal()" type="button" class="btn btn-default"> 
+					<span> < </span> Anterior 
+				</button> 
+			</div> 
+			<div class="col-md-1"> 
+				<button id="btn_pagina_siguiente" onclick="paginaActual = paginaActual + 1; obtenerListaPrincipal()" type="button" class="btn btn-default"> 
+					Siguiente <span> > </span> 
+				</button> 
+			</div> 
+		</div> 
+	</div> 
+
+	<br/> 
+	<!-- Fin nav paginacion --> 
+
+	<div class="table-responsive"> <!-- Contenedor para que la tabla sea responsiva --> 
+		<table id="tablaPrincipal" class="table table-bordered"> 
+			<thead> 
+				<tr> 
+					<th> id </th> 
+					<th> titulo </th> 
+					<th> contenido </th> 
+					<th> apuntesTema </th> 
+					<th> foto </th> 
+					<th> </th> 
+					<th> </th> 
+				</tr> 
+			</thead> 
+			<tbody> 
+			</tbody> 
+		</table> 
+	</div>  <!-- Fin Contenedor para que la tabla sea responsiva --> 
+</div> 

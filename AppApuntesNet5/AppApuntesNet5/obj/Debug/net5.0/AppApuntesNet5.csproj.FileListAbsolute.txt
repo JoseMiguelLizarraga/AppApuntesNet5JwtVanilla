@@ -69,3 +69,6 @@ C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5\AppApuntesNet5\bin\Debu
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5\AppApuntesNet5\bin\Debug\net5.0\Newtonsoft.Json.Bson.dll
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5\AppApuntesNet5\bin\Debug\net5.0\AppApuntesNet5.Views.dll
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5\AppApuntesNet5\obj\Debug\net5.0\AppApuntesNet5.csprojAssemblyReference.cache
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5\AppApuntesNet5\bin\Debug\net5.0\MySqlConnector.dll
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5\AppApuntesNet5\bin\Debug\net5.0\Pomelo.EntityFrameworkCore.MySql.dll
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5\AppApuntesNet5\bin\Debug\net5.0\System.Diagnostics.DiagnosticSource.dll

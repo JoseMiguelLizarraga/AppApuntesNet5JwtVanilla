@@ -1,13 +1,13 @@
 
 
-function mostrarLoadingSpinner() 
+const mostrarLoadingSpinner = () =>
 {
 	document.querySelector("#loading-spinner").style.display = "block";
 }
 
-function ocultarLoadingSpinner() 
+const ocultarLoadingSpinner = () =>
 {
 	document.querySelector("#loading-spinner").style.display = "none";
 }
 
-export { mostrarLoadingSpinner, ocultarLoadingSpinner };
+export { mostrarLoadingSpinner, ocultarLoadingSpinner }
