@@ -15,7 +15,7 @@ Javascript sin frameworks (Vanilla js)
 Importar a MySQL el archivo app_apuntes_net5.sql ubicado en la carpeta raiz. Colocar la carpeta docs dentro de un servidor web (Apache, UsbWebServer, Xampp, etc).
 También se puede probar la parte del front-end accediendo a la ruta https://josemiguellizarraga.github.io/AppApuntesNet5JwtVanilla/
 
-<br /><br />
+<br />
 
 Usuario: ejemplo@gmail.com <br />
 Password: MyN3wP@ssw0rd <br />  
