@@ -33,6 +33,13 @@ namespace WebApiPaises.Controllers
             this._configuration = configuration;
         }
 
+        [Route("Account/Probando")]  // https://localhost:44322/Account/Probando
+        [HttpGet]
+        public IActionResult Probando()
+        {
+            return Ok("Probando");
+        }
+
         // Accion para generar un token en base a un usuario con un email y un password
         [Route("Account/Create")]
         [HttpPost]

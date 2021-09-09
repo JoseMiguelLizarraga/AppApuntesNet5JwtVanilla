@@ -1,5 +1,6 @@
 using AppApuntesNet5.Dto;
 using AppApuntesNet5.Models;
+using AppApuntesNet5.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -47,7 +48,12 @@ namespace AppApuntesNet5
                 options.UseMySql(mySqlConnectionStr, ServerVersion.AutoDetect(mySqlConnectionStr))
             );
 
-            //==============================================>>>>>
+            //===============================================================>>>>>
+            
+            services.AddTransient<IApuntesTemaService, ApuntesTemaService>();
+            services.AddTransient<IApuntesDetalleTemaService, ApuntesDetalleTemaService>();
+
+            //===============================================================>>>>>
             // Agregar identity para poder usar el sistema de usuarios por defectos de asp.net
             // La clase ApplicationUser del modelo representa a un usuario en la base de datos
 
@@ -72,7 +78,7 @@ namespace AppApuntesNet5
                     ClockSkew = TimeSpan.Zero
                 });
 
-            //==============================================>>>>>
+            //===============================================================>>>>>
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -80,7 +86,7 @@ namespace AppApuntesNet5
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AppApuntesNet5", Version = "v1" });
             });
 
-            //==========================================================>>>>>
+            //===============================================================>>>>>
             /* Asi ignora la referencia ciclica al convertir a json una instancia de una clase
             padre que tiene una referencia cruzada a una clase hija; y cuya clase hija tambien
             hace referencia a la clase padre, formando un loop infinito.
@@ -91,10 +97,11 @@ namespace AppApuntesNet5
                 o.SerializerSettings.DateFormatString = "yyyy-MM-dd";  // Asi las fechas convertidas a json se muestran formateadas a yyyy-MM-dd
                 o.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
-            //==========================================================>>>>>
+            //===============================================================>>>>>
 
             services.AddCors();  // Habilitar que otras aplicaciones usen el web api 
-            //==========================================================>>>>>
+
+            //===============================================================>>>>>
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

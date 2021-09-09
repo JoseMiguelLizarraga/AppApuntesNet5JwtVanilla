@@ -6,10 +6,10 @@ using System.Net;
 using System.Linq; 
 using System.Net.Http; 
 using System.Net.Http.Headers; 
-using AppApuntesNet5.Dao; 
 using AppApuntesNet5.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using AppApuntesNet5.Services;
 
 namespace AppApuntesNet5.Controllers 
 {
@@ -21,20 +21,18 @@ namespace AppApuntesNet5.Controllers
 	public class ApuntesTemaController : ControllerBase 
 	{ 
 
-		private ApuntesTemaDao dao = null; 
-		private readonly ApplicationDbContext context; 
+		private readonly IApuntesTemaService _apuntesTemaService;
 
-		public ApuntesTemaController(ApplicationDbContext context) 
+		public ApuntesTemaController(IApuntesTemaService apuntesTemaService) 
 		{ 
-			this.context = context;  // Esto es para poder usar el ApplicationDbContext 
-			this.dao = new ApuntesTemaDao(this.context); 
+			_apuntesTemaService = apuntesTemaService;
 		} 
 
 		[HttpGet] 
 		public IActionResult Get() 
 		{ 
 			try { 
-				return Ok(dao.listar()); 
+				return Ok(_apuntesTemaService.listar()); 
 			} 
 			catch (Exception) 
 			{ 
@@ -49,7 +47,7 @@ namespace AppApuntesNet5.Controllers
 			int registrosPorPagina = int.Parse(HttpContext.Request.Query["length"].ToString());  // Es la cantidad de registros por pagina 
 
 
-			IDictionary<string, object> respuesta = dao.llenarDataTableApuntesTema(apuntesTema, inicio, registrosPorPagina); 
+			IDictionary<string, object> respuesta = _apuntesTemaService.llenarDataTableApuntesTema(apuntesTema, inicio, registrosPorPagina); 
 			return respuesta; 
 		} 
 
@@ -67,27 +65,13 @@ namespace AppApuntesNet5.Controllers
 			} 
 		} 
 
-		[HttpGet] // Metodo usado para llenar combobox en proyectos Angular  
-		[Route("obtenerListasBuscador")] 
-		public object obtenerListasBuscador() 
-		{ 
-			try { 
-				IDictionary<string, object> respuesta = new Dictionary<string, object>(); 
-				respuesta["listaApuntesCategoria"] = this.context.ApuntesCategoria.Select(c => new { c.id }); 
-				return respuesta; 
-			} 
-			catch (Exception ex) 
-			{ 
-				return BadRequest(ex.Message); 
-			} 
-		} 
 
 		[HttpGet] 
 		[Route("llenarSelect2")] 
 		public object llenarSelect2(String clase, String busqueda, int registrosPorPagina, int numeroPagina) 
 		{ 
 			try { 
-				return dao.llenarSelect2(clase, busqueda, registrosPorPagina, numeroPagina); 
+				return _apuntesTemaService.llenarSelect2(clase, busqueda, registrosPorPagina, numeroPagina); 
 			} 
 			catch (Exception ex) 
 			{ 
@@ -100,7 +84,7 @@ namespace AppApuntesNet5.Controllers
 		public IActionResult buscarPorId(int id) 
 		{ 
 			try { 
-				return Ok(dao.buscarPorId(id)); 
+				return Ok(_apuntesTemaService.buscarPorId(id)); 
 			} 
 			catch (Exception ex) 
 			{ 
@@ -112,7 +96,7 @@ namespace AppApuntesNet5.Controllers
 		public IActionResult Post(ApuntesTema apuntesTema) 
 		{ 
 			try { 
-				return Ok(dao.guardar(apuntesTema)); 
+				return Ok(_apuntesTemaService.guardar(apuntesTema)); 
 			} 
 			catch (Exception ex) 
 			{ 
@@ -124,7 +108,7 @@ namespace AppApuntesNet5.Controllers
 		public IActionResult Put(ApuntesTema apuntesTema) 
 		{ 
 			try { 
-				return Ok(dao.actualizar(apuntesTema)); 
+				return Ok(_apuntesTemaService.actualizar(apuntesTema)); 
 			} 
 			catch (Exception ex) 
 			{ 
@@ -135,8 +119,8 @@ namespace AppApuntesNet5.Controllers
 		[HttpDelete("{id}")] 
 		public IActionResult Delete(int id) 
 		{ 
-			try { 
-				dao.eliminar(id); 
+			try {
+				_apuntesTemaService.eliminar(id); 
 				return Ok(); 
 			} 
 			catch (Exception ex) 

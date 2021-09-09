@@ -1,24 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5\\AppApuntesNet5\\AppApuntesNet5.csproj": {}
+    "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5JwtVanilla\\AppApuntesNet5\\AppApuntesNet5\\AppApuntesNet5.csproj": {}
   },
   "projects": {
-    "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5\\AppApuntesNet5\\AppApuntesNet5.csproj": {
+    "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5JwtVanilla\\AppApuntesNet5\\AppApuntesNet5\\AppApuntesNet5.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5\\AppApuntesNet5\\AppApuntesNet5.csproj",
+        "projectUniqueName": "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5JwtVanilla\\AppApuntesNet5\\AppApuntesNet5\\AppApuntesNet5.csproj",
         "projectName": "AppApuntesNet5",
-        "projectPath": "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5\\AppApuntesNet5\\AppApuntesNet5.csproj",
+        "projectPath": "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5JwtVanilla\\AppApuntesNet5\\AppApuntesNet5\\AppApuntesNet5.csproj",
         "packagesPath": "C:\\Users\\josel\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5\\AppApuntesNet5\\obj\\",
+        "outputPath": "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5JwtVanilla\\AppApuntesNet5\\AppApuntesNet5\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
         ],
         "configFilePaths": [
           "C:\\Users\\josel\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
@@ -106,7 +109,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }
