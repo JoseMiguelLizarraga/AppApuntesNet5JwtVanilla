@@ -50,8 +50,8 @@ namespace AppApuntesNet5
 
             //===============================================================>>>>>
             
-            services.AddTransient<IApuntesTemaService, ApuntesTemaService>();
-            services.AddTransient<IApuntesDetalleTemaService, ApuntesDetalleTemaService>();
+            services.AddTransient<ITemaService, TemaService>();
+            services.AddTransient<IDetalleTemaService, DetalleTemaService>();
 
             //===============================================================>>>>>
             // Agregar identity para poder usar el sistema de usuarios por defectos de asp.net

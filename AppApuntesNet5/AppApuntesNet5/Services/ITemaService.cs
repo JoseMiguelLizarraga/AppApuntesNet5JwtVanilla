@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace AppApuntesNet5.Services
 {
 
-	public interface IApuntesTemaService
+	public interface ITemaService
 	{
 		//private ApplicationDbContext db;
 

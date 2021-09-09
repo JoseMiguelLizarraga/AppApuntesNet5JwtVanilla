@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace AppApuntesNet5.Services
 {
-    public class ApuntesTemaService : IApuntesTemaService
+    public class TemaService : ITemaService
 	{
 
 		private ApplicationDbContext db;
 
-		public ApuntesTemaService(ApplicationDbContext context)
+		public TemaService(ApplicationDbContext context)
 		{
 			this.db = context;
 		}

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AppApuntesNet5.Services
 {
-	public interface IApuntesDetalleTemaService
+	public interface IDetalleTemaService
 	{
 		public List<ApuntesDetalleTema> listar();
 		public ApuntesDetalleTema buscarPorId(int id);

@@ -2,10 +2,6 @@ using System;
 using System.Collections.Generic; 
 using Microsoft.AspNetCore.Http; 
 using Microsoft.AspNetCore.Mvc; 
-using System.Net; 
-using System.Linq; 
-using System.Net.Http; 
-using System.Net.Http.Headers; 
 using AppApuntesNet5.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,18 +15,18 @@ namespace AppApuntesNet5.Controllers
 	[ApiController] 
 	public class ApuntesDetalleTemaController : ControllerBase 
 	{
-		private readonly IApuntesDetalleTemaService _apuntesDetalleTemaService;
+		private readonly IDetalleTemaService _detalleTemaService;
 
-		public ApuntesDetalleTemaController(IApuntesDetalleTemaService apuntesDetalleTemaService)
+		public ApuntesDetalleTemaController(IDetalleTemaService detalleTemaService)
 		{
-			_apuntesDetalleTemaService = apuntesDetalleTemaService;
+			_detalleTemaService = detalleTemaService;
 		}
 
 		[HttpGet] 
 		public IActionResult Get() 
 		{ 
 			try { 
-				return Ok(_apuntesDetalleTemaService.listar()); 
+				return Ok(_detalleTemaService.listar()); 
 			} 
 			catch (Exception) 
 			{ 
@@ -45,7 +41,7 @@ namespace AppApuntesNet5.Controllers
 			int registrosPorPagina = int.Parse(HttpContext.Request.Query["length"].ToString());  // Es la cantidad de registros por pagina 
 
 
-			IDictionary<string, object> respuesta = _apuntesDetalleTemaService.llenarDataTableApuntesDetalleTema(apuntesDetalleTema, inicio, registrosPorPagina); 
+			IDictionary<string, object> respuesta = _detalleTemaService.llenarDataTableApuntesDetalleTema(apuntesDetalleTema, inicio, registrosPorPagina); 
 			return respuesta; 
 		} 
 
@@ -69,7 +65,7 @@ namespace AppApuntesNet5.Controllers
 		public object llenarSelect2(String clase, String busqueda, int registrosPorPagina, int numeroPagina, int idApuntesCategoria) 
 		{ 
 			try { 
-				return _apuntesDetalleTemaService.llenarSelect2(clase, busqueda, registrosPorPagina, numeroPagina, idApuntesCategoria); 
+				return _detalleTemaService.llenarSelect2(clase, busqueda, registrosPorPagina, numeroPagina, idApuntesCategoria); 
 			} 
 			catch (Exception ex) 
 			{ 
@@ -82,7 +78,7 @@ namespace AppApuntesNet5.Controllers
 		public IActionResult buscarPorId(int id) 
 		{ 
 			try { 
-				return Ok(_apuntesDetalleTemaService.buscarPorId(id)); 
+				return Ok(_detalleTemaService.buscarPorId(id)); 
 			} 
 			catch (Exception ex) 
 			{ 
@@ -94,7 +90,7 @@ namespace AppApuntesNet5.Controllers
 		public IActionResult Post(ApuntesDetalleTema apuntesDetalleTema) 
 		{ 
 			try { 
-				return Ok(_apuntesDetalleTemaService.guardar(apuntesDetalleTema)); 
+				return Ok(_detalleTemaService.guardar(apuntesDetalleTema)); 
 			} 
 			catch (Exception ex) 
 			{ 
@@ -106,7 +102,7 @@ namespace AppApuntesNet5.Controllers
 		public IActionResult Put(ApuntesDetalleTema apuntesDetalleTema) 
 		{ 
 			try { 
-				return Ok(_apuntesDetalleTemaService.actualizar(apuntesDetalleTema)); 
+				return Ok(_detalleTemaService.actualizar(apuntesDetalleTema)); 
 			} 
 			catch (Exception ex) 
 			{ 
@@ -118,7 +114,7 @@ namespace AppApuntesNet5.Controllers
 		public IActionResult Delete(int id) 
 		{ 
 			try {
-				_apuntesDetalleTemaService.eliminar(id); 
+				_detalleTemaService.eliminar(id); 
 				return Ok(); 
 			} 
 			catch (Exception ex) 
