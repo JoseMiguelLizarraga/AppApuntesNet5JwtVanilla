@@ -1,0 +1,100 @@
+<div id="modalCrearEditar" class="modal fade in" data-backdrop="static" data-keyboard="false" tabindex="-1" style="overflow-y: scroll;" role="dialog"> 
+	<div class="modal-dialog mw-100 w-90" style="width: 90%;"> 
+		<div class="modal-content"> 
+			<form onsubmit="guardar(event)" class="apuntesCategoria"> 
+
+				<!-- <div class="modal-header"> 
+					<h4 class="modal-title">Crear/Editar</h4> 
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"> 
+						<span aria-hidden="true">×</span> 
+					</button> 
+				</div>  -->
+
+                <div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button> 
+					<h3 class="modal-title"> Crear/Editar </h3> 
+				</div> 
+
+                
+				<div class="modal-body"> 
+					<div class="row"> 
+
+						<div class="col-md-4"> 
+							<div class="form-group"> 
+								<label class="control-label" for="titulo"> titulo </label> 
+                                <input type="text" onkeyup="apuntesCategoria[this.name] = this.value" name="titulo" class="apuntesCategoria form-control" autocomplete="off" />
+							</div> 
+						</div> 
+
+					</div> <!-- Fin <div class="row"> --> 
+				</div> 
+				<div class="modal-footer"> 
+					<button type="submit" class="btn btn-primary"> Guardar </button> 
+					<button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button> 
+				</div> 
+			</form> 
+
+		</div> 
+	</div> 
+</div> 
+
+<div> 
+
+	<br/> 
+	<button name="crear" onclick="crearNuevo(); $('#modalCrearEditar').modal('show')" class="btn btn-success"> <span>+</span> Agregar Nuevo ApuntesCategoria </button> <br/> 
+
+	<br/><br/> 
+	<!-- Filtro busqueda --> 
+
+	<div id="filtro-busqueda" class="row"> 
+		<div class="col-md-4"> 
+			<div class="form-group"> 
+
+				<label class="control-label" for="titulo"> titulo </label> 
+                <input nombre="titulo" onkeyup="resetearPaginacion(); obtenerListaPrincipal()" type="text" class="form-control" />
+			</div> 
+		</div> 
+	</div> 
+
+	<!-- Fin filtro busqueda --> 
+
+	<br/> 
+	<h4> Listado de ApuntesCategoria </h4> 
+
+	<!-- Inicio nav paginacion --> 
+	<br/> 
+
+	<div id="nav_paginacion" style="display: none"> 
+		<div class="row"> 
+			<div class="col-md-1"> 
+				<button id="btn_pagina_anterior" onclick="paginaActual = paginaActual - 1; obtenerListaPrincipal()" type="button" class="btn btn-default"> 
+					<span> < </span> Anterior 
+				</button> 
+			</div> 
+			<div class="col-md-1"> 
+				<button id="btn_pagina_siguiente" onclick="paginaActual = paginaActual + 1; obtenerListaPrincipal()" type="button" class="btn btn-default"> 
+					Siguiente <span> > </span> 
+				</button> 
+			</div> 
+		</div> 
+	</div> 
+
+	<br/> 
+	<!-- Fin nav paginacion --> 
+
+	<div class="table-responsive"> <!-- Contenedor para que la tabla sea responsiva --> 
+		<table id="tablaPrincipal" class="table table-bordered"> 
+			<thead> 
+				<tr> 
+					<th> id </th> 
+					<th> titulo </th> 
+					<th> </th> 
+					<th> </th> 
+				</tr> 
+			</thead> 
+			<tbody> 
+			</tbody> 
+		</table> 
+	</div>  <!-- Fin Contenedor para que la tabla sea responsiva --> 
+</div> 
+

@@ -16,6 +16,7 @@ export const menuNavegacionMain = `
             <ul class="nav navbar-nav navbar-right">	
         
                 <li> <a href="#" link="#inicio"> Inicio </a></li>
+                <li> <a href="#" link="#apuntesCategoria"> Ver Categorías </a> </li> 
                 <li> <a href="#" link="#apuntesTema"> Ver por Temas </a> </li>  
                 <li> <a href="#" link="#apuntesDetalleTema"> Ver por detalles de tema </a> </li>   
                 <li> <a href="#" onclick="cerrarSesion(event)"> Cerrar Sesión </a> </li>  					                

@@ -50,7 +50,7 @@ namespace AppApuntesNet5
 
             //===============================================================>>>>>
 
-            services.AddTransient<ICategoriaService, CategoriaService>();
+            services.AddSingleton<ICategoriaService, CategoriaService>();
             services.AddTransient<ITemaService, TemaService>();
             services.AddTransient<IDetalleTemaService, DetalleTemaService>();
 
