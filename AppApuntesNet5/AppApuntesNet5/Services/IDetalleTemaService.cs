@@ -1,4 +1,5 @@
-﻿using AppApuntesNet5.Models;
+﻿using AppApuntesNet5.Dto;
+using AppApuntesNet5.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +9,12 @@ namespace AppApuntesNet5.Services
 {
 	public interface IDetalleTemaService
 	{
-		public List<ApuntesDetalleTema> listar();
-		public ApuntesDetalleTema buscarPorId(int id);
-		public IDictionary<string, object> llenarDataTableApuntesDetalleTema(ApuntesDetalleTema apuntesDetalleTema, int inicio, int registrosPorPagina);
-		public IDictionary<string, object> llenarSelect2(String clase, String busqueda, int registrosPorPagina, int numeroPagina, int idApuntesCategoria);
-		public ApuntesDetalleTema guardar(ApuntesDetalleTema apuntesDetalleTema);
-		public ApuntesDetalleTema actualizar(ApuntesDetalleTema apuntesDetalleTema);
-		public void eliminar(int id);
-		public void validarApuntesDetalleTema(ApuntesDetalleTema apuntesDetalleTema);
+		public List<ApuntesDetalleTema> Listar();
+		public ApuntesDetalleTema BuscarPorId(int id);
+		public DataTableDTO LlenarDataTableApuntesDetalleTema(ApuntesDetalleTema apuntesDetalleTema, int inicio, int registrosPorPagina);
+		public (ApuntesDetalleTema, string) Guardar(ApuntesDetalleTema apuntesDetalleTema);
+		public (ApuntesDetalleTema, string) Actualizar(ApuntesDetalleTema apuntesDetalleTema);
+		public bool Eliminar(int id, out string mensajeError);
+		public bool ValidarApuntesDetalleTema(ApuntesDetalleTema apuntesDetalleTema, out string mensajeError);
 	}
 }

@@ -1,4 +1,5 @@
-﻿using AppApuntesNet5.Models;
+﻿using AppApuntesNet5.Dto;
+using AppApuntesNet5.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,12 +18,12 @@ namespace AppApuntesNet5.Services
 			this.db = context;
 		}
 
-		public List<ApuntesDetalleTema> listar()
+		public List<ApuntesDetalleTema> Listar()
 		{
 			return db.ApuntesDetalleTema.ToList();
 		}
 
-		public ApuntesDetalleTema buscarPorId(int id)
+		public ApuntesDetalleTema BuscarPorId(int id)
 		{
 			var v = (from c in db.ApuntesDetalleTema
 			.Include(i => i.apuntesTema)
@@ -32,7 +33,7 @@ namespace AppApuntesNet5.Services
 			return v.Cast<ApuntesDetalleTema>().FirstOrDefault();
 		}
 
-		public IDictionary<string, object> llenarDataTableApuntesDetalleTema(ApuntesDetalleTema apuntesDetalleTema, int inicio, int registrosPorPagina)
+		public DataTableDTO LlenarDataTableApuntesDetalleTema(ApuntesDetalleTema apuntesDetalleTema, int inicio, int registrosPorPagina)
 		{
 			if (apuntesDetalleTema == null) apuntesDetalleTema = new ApuntesDetalleTema();  // En caso de que sea nulo se inicializa 
 
@@ -41,198 +42,134 @@ namespace AppApuntesNet5.Services
 				.Include(c => c.apuntesTema.apuntesCategoria)
 			select a);
 
-			//var v = (from c in db.ApuntesDetalleTema select new  
-			//{  
-			//	rutaFoto = c.rutaFoto, 
-			//	id = c.id, 
-			//	contenido = c.contenido, 
-			//	titulo = c.titulo, 
-			//	apuntesTemaId = c.apuntesTemaId
-			//}); 
-
 			if (apuntesDetalleTema.apuntesTema != null && apuntesDetalleTema.apuntesTema.apuntesCategoria != null && apuntesDetalleTema.apuntesTema.apuntesCategoria.id != 0)
-			{
 				v = v.Where(a => a.apuntesTema.apuntesCategoria.id == apuntesDetalleTema.apuntesTema.apuntesCategoria.id);
-			}
-
+			
 			if (apuntesDetalleTema.apuntesTema != null && apuntesDetalleTema.apuntesTema.id != 0)
-			{
 				v = v.Where(a => a.apuntesTemaId == apuntesDetalleTema.apuntesTema.id);
-			}
+		
 			if (!string.IsNullOrEmpty(apuntesDetalleTema.rutaFoto))
-			{
 				v = v.Where(a => a.rutaFoto.Contains(apuntesDetalleTema.rutaFoto));
-			}
-			//if (apuntesDetalleTema.contenido != null) { 
-			//v = v.Where(a => a.contenido == apuntesDetalleTema.contenido); 
-			//} 
+			
 			if (!string.IsNullOrEmpty(apuntesDetalleTema.titulo))
-			{
 				v = v.Where(a => a.titulo.Contains(apuntesDetalleTema.titulo));
-			}
+			
 
 			int totalRegistros = v.Count();
-			v = v.OrderBy(x => x.id).Skip(inicio).Take(registrosPorPagina);  // El OrderBy es necesario para poder funcionar 
+			v = v.OrderBy(x => x.id).Skip(inicio).Take(registrosPorPagina);
 
-			List<ApuntesDetalleTema> listaApuntesDetalleTema = v.ToList();
-
-			//List<ApuntesDetalleTema> listaApuntesDetalleTema = v.ToList().Select(c => new ApuntesDetalleTema 
-			//{ 
-			//	rutaFoto = c.rutaFoto, 
-			//	id = c.id, 
-			//	contenido = c.contenido, 
-			//	titulo = c.titulo, 
-			//	apuntesTema = new ApuntesTema { id = c.apuntesTemaId }
-			//}).ToList(); 
-
-			IDictionary<string, object> respuesta = new Dictionary<string, object>();
-
-			respuesta["recordsFiltered"] = totalRegistros;
-			respuesta["recordsTotal"] = totalRegistros;
-			respuesta["data"] = listaApuntesDetalleTema;
-
-			return respuesta;
+			return new DataTableDTO() { RecordsFiltered = totalRegistros, RecordsTotal = totalRegistros, Data = v.ToList() };
 		}
 
-
-		public IDictionary<string, object> llenarSelect2(String clase, String busqueda, int registrosPorPagina, int numeroPagina, int idApuntesCategoria)
+		public (ApuntesDetalleTema, string) Guardar(ApuntesDetalleTema objeto)
 		{
-			object dataSalida = null;
-			int cantidadRegistros = 0;
+			if (! ValidarApuntesDetalleTema(objeto, out string error))
+				return (null, error);
 
-			if (clase == "ApuntesTema")
+			using (var dbContextTransaction = db.Database.BeginTransaction())
 			{
-				IQueryable<ApuntesTema> consulta = (from a in db.ApuntesTema select a);
-
-				if (idApuntesCategoria != 0)
-				{  // Agregado
-					consulta = consulta.Where(a => a.apuntesCategoriaId == idApuntesCategoria);
-				}
-
-				if (!string.IsNullOrEmpty(busqueda))
-					consulta = consulta.Where(a => a.titulo.Contains(busqueda));
-
-				cantidadRegistros = consulta.Count();
-				consulta.Skip((numeroPagina - 1) * registrosPorPagina).Take(registrosPorPagina);
-				dataSalida = consulta.ToList().Select(a => new { id = a.id, text = a.titulo }).ToList();
-			}
-
-			IDictionary<string, object> respuesta = new Dictionary<string, object>();
-			respuesta["Total"] = cantidadRegistros;
-			respuesta["Results"] = dataSalida;
-			return respuesta;
-		}
-
-		public ApuntesDetalleTema guardar(ApuntesDetalleTema apuntesDetalleTema)
-		{
-			validarApuntesDetalleTema(apuntesDetalleTema);  // Validación 
-
-			using (var context = db)
-			{
-				using (var dbContextTransaction = context.Database.BeginTransaction())
+				try
 				{
-					try
-					{
-						context.ApuntesDetalleTema.Add(apuntesDetalleTema); // Insertar 
+					ApuntesDetalleTema model = new ApuntesDetalleTema() { 
+						apuntesTemaId = objeto.apuntesTema.id,
+						titulo = objeto.titulo,
+						contenido = objeto.contenido,
+						rutaFoto = objeto.rutaFoto
+					};
 
-						context.SaveChanges();
-						dbContextTransaction.Commit();
-						return apuntesDetalleTema;
+					db.ApuntesDetalleTema.Add(model); // Insertar 
 
-					}
-					catch (Exception ex)
-					{
-						dbContextTransaction.Rollback();
+					db.SaveChanges();
+					dbContextTransaction.Commit();
+					return (model, "");
 
-						throw new Exception(ex.InnerException != null && ex.InnerException.InnerException != null ?
-							ex.InnerException.InnerException.Message :  // Lanza errores SQL 
-							ex.Message
-						);
-					}
 				}
-			}
-		}
-
-		public ApuntesDetalleTema actualizar(ApuntesDetalleTema apuntesDetalleTema)
-		{
-			validarApuntesDetalleTema(apuntesDetalleTema);  // Validación 
-
-			using (var context = db)
-			{
-				using (var dbContextTransaction = context.Database.BeginTransaction())
+				catch (Exception ex)
 				{
-					try
-					{
-						ApuntesDetalleTema objeto = context.ApuntesDetalleTema.AsNoTracking().Where(x => x.id == apuntesDetalleTema.id).FirstOrDefault();
+					dbContextTransaction.Rollback();
 
-						objeto.apuntesTema = apuntesDetalleTema.apuntesTema;
-						objeto.rutaFoto = apuntesDetalleTema.rutaFoto;
-						objeto.contenido = apuntesDetalleTema.contenido;
-						objeto.titulo = apuntesDetalleTema.titulo;
-
-
-						context.Entry(objeto).State = EntityState.Modified; // Actualizar ApuntesDetalleTema 
-
-
-						context.SaveChanges();
-						dbContextTransaction.Commit();
-						return apuntesDetalleTema;
-					}
-					catch (Exception ex)
-					{
-						dbContextTransaction.Rollback();   // No se realizan los cambios 
-
-						throw new Exception(ex.InnerException != null && ex.InnerException.InnerException != null ?
-							ex.InnerException.InnerException.Message :  // Lanza errores SQL 
-							ex.Message
-						);
-					}
+					return (null, ex.InnerException != null && ex.InnerException.InnerException != null ?
+						ex.InnerException.InnerException.Message :  // Lanza errores SQL 
+						ex.Message);
 				}
-			}
-
+			}	
 		}
 
-		public void eliminar(int id)
+		public (ApuntesDetalleTema, string) Actualizar(ApuntesDetalleTema objeto)
 		{
-			using (var context = db)
+			if (!ValidarApuntesDetalleTema(objeto, out string error))
+				return (null, error);
+
+			using (var dbContextTransaction = db.Database.BeginTransaction())
 			{
-				using (var dbContextTransaction = context.Database.BeginTransaction())
+				try
 				{
-					try
-					{
-						ApuntesDetalleTema apuntesDetalleTema = context.ApuntesDetalleTema.AsNoTracking().Where(c => c.id == id).FirstOrDefault();
+					ApuntesDetalleTema model = db.ApuntesDetalleTema.AsNoTracking().Where(x => x.id == objeto.id).FirstOrDefault();
 
-						context.Entry(apuntesDetalleTema).State = EntityState.Deleted;
-						context.SaveChanges();
-						dbContextTransaction.Commit();
-					}
-					catch (Exception ex)
-					{
-						dbContextTransaction.Rollback();   // No se realizan los cambios 
-						throw new Exception(ex.Message);
-					}
+					model.apuntesTema = objeto.apuntesTema;
+					model.rutaFoto = objeto.rutaFoto;
+					model.contenido = objeto.contenido;
+					model.titulo = objeto.titulo;
+
+					db.Entry(model).State = EntityState.Modified; // Actualizar ApuntesDetalleTema 
+
+					db.SaveChanges();
+					dbContextTransaction.Commit();
+					return (model, "");
+				}
+				catch (Exception ex)
+				{
+					dbContextTransaction.Rollback();   // No se realizan los cambios 
+
+					return (null, ex.InnerException != null && ex.InnerException.InnerException != null ?
+						ex.InnerException.InnerException.Message :  // Lanza errores SQL 
+						ex.Message);
+				}
+			}
+		}
+
+		public bool Eliminar(int id, out string mensajeError)
+		{
+			mensajeError = "";  // Inicializa el out como un string vacio
+
+			using (var dbContextTransaction = db.Database.BeginTransaction())
+			{
+				try
+				{
+					ApuntesDetalleTema apuntesDetalleTema = db.ApuntesDetalleTema.AsNoTracking().Where(c => c.id == id).FirstOrDefault();
+
+					db.Entry(apuntesDetalleTema).State = EntityState.Deleted;
+					db.SaveChanges();
+					dbContextTransaction.Commit();
+				}
+				catch (Exception ex)
+				{
+					dbContextTransaction.Rollback();   // No se realizan los cambios 
+					mensajeError = ex.Message;
 				}
 			}
 
+			return string.IsNullOrEmpty(mensajeError);
 		}
 
 
-		public void validarApuntesDetalleTema(ApuntesDetalleTema apuntesDetalleTema)
+		public bool ValidarApuntesDetalleTema(ApuntesDetalleTema apuntesDetalleTema, out string mensajeError)
 		{
+			mensajeError = "";  // Inicializa el out como un string vacio
+
 			if (apuntesDetalleTema.apuntesTema == null)
-				throw new ArgumentException("El campo apuntesTema no posee un valor");
+				mensajeError = "El campo apuntesTema no posee un valor";
 
-			if (string.IsNullOrEmpty(apuntesDetalleTema.rutaFoto))
-				throw new ArgumentException("El campo rutaFoto no posee un valor");
+			//else if (string.IsNullOrEmpty(apuntesDetalleTema.rutaFoto))
+			//	mensajeError = "El campo rutaFoto no posee un valor";
 
-			if (apuntesDetalleTema.contenido == null)
-				throw new ArgumentException("El campo contenido no posee un valor");
+			else if(apuntesDetalleTema.contenido == null)
+				mensajeError = "El campo contenido no posee un valor";
 
-			if (string.IsNullOrEmpty(apuntesDetalleTema.titulo))
-				throw new ArgumentException("El campo titulo no posee un valor");
+			else if(string.IsNullOrEmpty(apuntesDetalleTema.titulo))
+				mensajeError = "El campo titulo no posee un valor";
 
-
+			return string.IsNullOrEmpty(mensajeError);  // El retorno booleano dependera de si se encontro un error o no
 		}
-
 	}
 }

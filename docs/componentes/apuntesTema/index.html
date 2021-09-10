@@ -30,7 +30,7 @@
 								<div> 
 									<input type="text" style="display: none; width: 100%;" class="form-control" /> 
 									
-									<select onclick="inicializarSelectBuscador(event)" rutaWebApi="/ApuntesTema/llenarSelect2" 
+									<select onclick="inicializarSelectBuscador(event)" rutaWebApi="/ApuntesCategoria/llenarSelect2" 
 									onchange="apuntesTema.apuntesCategoria.id = this.value; apuntesTema.apuntesCategoria.toString = this.options[this.selectedIndex].text" 
 									name="apuntesCategoria" entidad="ApuntesCategoria" atributoBuscado="titulo" class="apuntesTema form-control"> 
 										<option value=""> - Seleccione - </option> 
@@ -95,7 +95,7 @@
 				<div> 
 					<input type="text" style="display: none; width: 100%;" class="form-control" /> 
 
-					<select id="apuntesCategoriaId" onclick="inicializarSelectBuscador(event)" rutaWebApi="/ApuntesTema/llenarSelect2" 
+					<select id="apuntesCategoriaId" onclick="inicializarSelectBuscador(event)" rutaWebApi="/ApuntesCategoria/llenarSelect2" 
 					onchange="resetearPaginacion(); obtenerListaPrincipal()" entidad="ApuntesCategoria" atributoBuscado="titulo" class="form-control"> 
 						<option value=""> -Todos- </option> 
 					</select> 

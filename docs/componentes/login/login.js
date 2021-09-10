@@ -49,6 +49,7 @@ export class Login extends CargaVista
                     //console.log(data);
                     localStorage.setItem("token_app_apuntes", data.token);	
                     //window.location.href = "http://localhost/AppApuntes/apuntesTema";  
+					console.log(data.token);
 
                     window.location.href = "#apuntesDetalleTema";
                     window.location.reload();

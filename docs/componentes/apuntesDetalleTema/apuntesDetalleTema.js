@@ -37,7 +37,7 @@ export class ApuntesDetalleTema extends CargaVista
             querySelector: "#apuntesCategoriaId",                 //buscador_apuntesCategoria_select2
             token: localStorage.getItem("token_app_apuntes"),
             placeholder: "Seleccione",
-            url: url + "/ApuntesTema/llenarSelect2",
+            url: url + "/ApuntesCategoria/llenarSelect2",
             params: { "clase": "ApuntesCategoria", "atributoBuscado": "titulo" },
             registrosPorPagina: {nombre: "registrosPorPagina", valor: 10},
             nombrePagina: "numeroPagina", nombreBusqueda: "busqueda", mensajeBuscando: "buscando resultados ...",
@@ -59,7 +59,7 @@ export class ApuntesDetalleTema extends CargaVista
             querySelector: "#apuntesTemaId",                         //buscador_apuntesTema_select2
             token: localStorage.getItem("token_app_apuntes"),
             placeholder: "Seleccione",
-            url: url + "/ApuntesDetalleTema/llenarSelect2", 
+            url: url + "/ApuntesTema/llenarSelect2", 
             params: { 
                 "clase": "ApuntesTema", 
                 "atributoBuscado": "titulo",
@@ -79,7 +79,7 @@ export class ApuntesDetalleTema extends CargaVista
             querySelector: "#apuntesTema",                 //apuntesTema_select2
             token: localStorage.getItem("token_app_apuntes"),
             placeholder: "Seleccione",
-            url: url + "/ApuntesDetalleTema/llenarSelect2", 
+            url: url + "/ApuntesTema/llenarSelect2", 
             params: { "clase": "ApuntesTema", "atributoBuscado": "titulo", "idApuntesCategoria": 0 }, 
             registrosPorPagina: {nombre: "registrosPorPagina", valor: 10},
             nombrePagina: "numeroPagina", nombreBusqueda: "busqueda", mensajeBuscando: "buscando resultados ...",

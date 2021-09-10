@@ -25,104 +25,48 @@ namespace AppApuntesNet5.Controllers
 		[HttpGet] 
 		public IActionResult Get() 
 		{ 
-			try { 
-				return Ok(_detalleTemaService.listar()); 
-			} 
-			catch (Exception) 
-			{ 
-				return NotFound(); 
-			} 
-		} 
-
-		[ApiExplorerSettings(IgnoreApi = true)]  // Asi swagger ignora este metodo 
-		public IDictionary<string, object> llenarInformacionDataTable(ApuntesDetalleTema apuntesDetalleTema) 
-		{ 
-			int inicio = int.Parse(HttpContext.Request.Query["start"].ToString()); 
-			int registrosPorPagina = int.Parse(HttpContext.Request.Query["length"].ToString());  // Es la cantidad de registros por pagina 
-
-
-			IDictionary<string, object> respuesta = _detalleTemaService.llenarDataTableApuntesDetalleTema(apuntesDetalleTema, inicio, registrosPorPagina); 
-			return respuesta; 
+			return Ok(_detalleTemaService.Listar()); 
 		} 
 
 		[HttpPost] 
 		[Route("llenarDataTable")] 
-		public IActionResult llenarDataTable([FromQuery] ApuntesDetalleTema apuntesDetalleTema) 
-		{ 
-			try { 
-				IDictionary<string, object> mapa = llenarInformacionDataTable(apuntesDetalleTema); 
-				return Ok(mapa); 
-			} 
-			catch (Exception ex) 
-			{ 
-				return BadRequest(ex.Message); 
-			} 
-		} 
-
-
-		[HttpGet] 
-		[Route("llenarSelect2")] 
-		public object llenarSelect2(String clase, String busqueda, int registrosPorPagina, int numeroPagina, int idApuntesCategoria) 
-		{ 
-			try { 
-				return _detalleTemaService.llenarSelect2(clase, busqueda, registrosPorPagina, numeroPagina, idApuntesCategoria); 
-			} 
-			catch (Exception ex) 
-			{ 
-				return BadRequest(ex.Message); 
-			} 
+		public IActionResult LlenarDataTable([FromQuery] ApuntesDetalleTema apuntesDetalleTema, int start, int length) 
+		{
+			return Ok(_detalleTemaService.LlenarDataTableApuntesDetalleTema(apuntesDetalleTema, start, length));
 		} 
 
 		[HttpGet] 
 		[Route("{id:int}")] 
-		public IActionResult buscarPorId(int id) 
-		{ 
-			try { 
-				return Ok(_detalleTemaService.buscarPorId(id)); 
-			} 
-			catch (Exception ex) 
-			{ 
-				return NotFound(ex.Message); 
-			} 
+		public IActionResult BuscarPorId(int id) 
+		{
+			return Ok(_detalleTemaService.BuscarPorId(id));
 		} 
 
 		[HttpPost] 
 		public IActionResult Post(ApuntesDetalleTema apuntesDetalleTema) 
-		{ 
-			try { 
-				return Ok(_detalleTemaService.guardar(apuntesDetalleTema)); 
-			} 
-			catch (Exception ex) 
-			{ 
-				return BadRequest(ex.Message); 
-			} 
+		{
+			(ApuntesDetalleTema, string) result = _detalleTemaService.Guardar(apuntesDetalleTema);
+
+			if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
+			return Ok(result.Item1);
 		} 
 
 		[HttpPut] 
 		public IActionResult Put(ApuntesDetalleTema apuntesDetalleTema) 
-		{ 
-			try { 
-				return Ok(_detalleTemaService.actualizar(apuntesDetalleTema)); 
-			} 
-			catch (Exception ex) 
-			{ 
-				return BadRequest(ex.Message); 
-			} 
+		{
+			(ApuntesDetalleTema, string) result = _detalleTemaService.Actualizar(apuntesDetalleTema);
+
+			if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
+			return Ok(result.Item1);
 		} 
 
 		[HttpDelete("{id}")] 
 		public IActionResult Delete(int id) 
-		{ 
-			try {
-				_detalleTemaService.eliminar(id); 
-				return Ok(); 
-			} 
-			catch (Exception ex) 
-			{ 
-				return BadRequest(ex.Message); 
-			} 
+		{
+			if (! _detalleTemaService.Eliminar(id, out string error))
+				return BadRequest(error);
+
+			return Ok();
 		}
-	
 	} 
- 
 }
