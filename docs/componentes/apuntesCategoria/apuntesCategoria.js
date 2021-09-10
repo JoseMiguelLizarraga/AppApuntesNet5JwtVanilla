@@ -205,8 +205,8 @@ export class ApuntesCategoria extends CargaVista
 		//mostrarLoadingSpinner(); 
 
 		await fetch(url + "/ApuntesCategoria/" + id, { 
-			method: "GET" 
-			//headers: {"Authorization": "Bearer ejemploToken"} 
+			method: "GET", 
+            headers: {"Authorization": "Bearer " + localStorage.getItem("token_app_apuntes") }
 		}) 
 		.then(response => 
 		{ 

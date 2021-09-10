@@ -42,6 +42,13 @@ namespace AppApuntesNet5.Controllers
 			return retorno;
 		}
 
+		[HttpGet]
+		[Route("{id:int}")]
+		public ActionResult<ApuntesCategoria> BuscarPorId(int id)
+		{
+			return _categoriaService.BuscarPorId(id);
+		}
+
 		[HttpPost]
 		public async Task<ActionResult<ApuntesCategoria>> Post(ApuntesCategoria apuntesCategoria)
 		{
@@ -50,5 +57,23 @@ namespace AppApuntesNet5.Controllers
 			if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
 			return Ok(result.Item1);
 		}
-	} 
+
+		[HttpPut]
+		public async Task<ActionResult<ApuntesCategoria>> Put(ApuntesCategoria apuntesCategoria)
+		{
+			(ApuntesCategoria, string) result = await _categoriaService.Actualizar(apuntesCategoria);
+
+			if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
+			return Ok(result.Item1);
+		}
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            (bool, string) result = await _categoriaService.Eliminar(id);
+
+            if (!result.Item1) return BadRequest(result.Item2);
+            return Ok();
+        }
+    } 
 }

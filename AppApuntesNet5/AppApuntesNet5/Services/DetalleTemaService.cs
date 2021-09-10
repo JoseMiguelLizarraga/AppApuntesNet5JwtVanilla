@@ -131,7 +131,7 @@ namespace AppApuntesNet5.Services
 
 		public async Task<(bool, string)> Eliminar(int id)
 		{
-			string mensajeError = "";  // Inicializa el out como un string vacio
+			string mensajeError = ""; 
 
 			using (var dbContextTransaction = db.Database.BeginTransaction())
 			{
