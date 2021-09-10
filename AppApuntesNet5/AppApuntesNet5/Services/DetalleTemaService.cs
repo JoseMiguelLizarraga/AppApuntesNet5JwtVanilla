@@ -18,22 +18,22 @@ namespace AppApuntesNet5.Services
 			this.db = context;
 		}
 
-		public List<ApuntesDetalleTema> Listar()
+		public async Task<List<ApuntesDetalleTema>> Listar()
 		{
-			return db.ApuntesDetalleTema.ToList();
+			return await db.ApuntesDetalleTema.ToListAsync();
 		}
 
-		public ApuntesDetalleTema BuscarPorId(int id)
+		public async Task<ApuntesDetalleTema> BuscarPorId(int id)
 		{
 			var v = (from c in db.ApuntesDetalleTema
-			.Include(i => i.apuntesTema)
+				.Include(i => i.apuntesTema)
 				where c.id == id
-				select c);
+			select c);
 
-			return v.Cast<ApuntesDetalleTema>().FirstOrDefault();
+			return await v.Cast<ApuntesDetalleTema>().FirstOrDefaultAsync();
 		}
 
-		public DataTableDTO LlenarDataTableApuntesDetalleTema(ApuntesDetalleTema apuntesDetalleTema, int inicio, int registrosPorPagina)
+		public async Task<DataTableDTO> LlenarDataTableApuntesDetalleTema(ApuntesDetalleTema apuntesDetalleTema, int inicio, int registrosPorPagina)
 		{
 			if (apuntesDetalleTema == null) apuntesDetalleTema = new ApuntesDetalleTema();  // En caso de que sea nulo se inicializa 
 
@@ -58,10 +58,11 @@ namespace AppApuntesNet5.Services
 			int totalRegistros = v.Count();
 			v = v.OrderBy(x => x.id).Skip(inicio).Take(registrosPorPagina);
 
-			return new DataTableDTO() { RecordsFiltered = totalRegistros, RecordsTotal = totalRegistros, Data = v.ToList() };
+			List<ApuntesDetalleTema> lista = await v.ToListAsync();
+			return new DataTableDTO() { RecordsFiltered = totalRegistros, RecordsTotal = totalRegistros, Data = lista };
 		}
 
-		public (ApuntesDetalleTema, string) Guardar(ApuntesDetalleTema objeto)
+		public async Task<(ApuntesDetalleTema, string)> Guardar(ApuntesDetalleTema objeto)
 		{
 			if (! ValidarApuntesDetalleTema(objeto, out string error))
 				return (null, error);
@@ -77,10 +78,10 @@ namespace AppApuntesNet5.Services
 						rutaFoto = objeto.rutaFoto
 					};
 
-					db.ApuntesDetalleTema.Add(model); // Insertar 
+					await db.ApuntesDetalleTema.AddAsync(model); // Insertar 
 
-					db.SaveChanges();
-					dbContextTransaction.Commit();
+					await db.SaveChangesAsync();
+					await dbContextTransaction.CommitAsync();
 					return (model, "");
 
 				}
@@ -95,7 +96,7 @@ namespace AppApuntesNet5.Services
 			}	
 		}
 
-		public (ApuntesDetalleTema, string) Actualizar(ApuntesDetalleTema objeto)
+		public async Task<(ApuntesDetalleTema, string)> Actualizar(ApuntesDetalleTema objeto)
 		{
 			if (!ValidarApuntesDetalleTema(objeto, out string error))
 				return (null, error);
@@ -104,7 +105,7 @@ namespace AppApuntesNet5.Services
 			{
 				try
 				{
-					ApuntesDetalleTema model = db.ApuntesDetalleTema.AsNoTracking().Where(x => x.id == objeto.id).FirstOrDefault();
+					ApuntesDetalleTema model = await db.ApuntesDetalleTema.AsNoTracking().Where(x => x.id == objeto.id).FirstOrDefaultAsync();
 
 					model.apuntesTema = objeto.apuntesTema;
 					model.rutaFoto = objeto.rutaFoto;
@@ -113,8 +114,8 @@ namespace AppApuntesNet5.Services
 
 					db.Entry(model).State = EntityState.Modified; // Actualizar ApuntesDetalleTema 
 
-					db.SaveChanges();
-					dbContextTransaction.Commit();
+					await db.SaveChangesAsync();
+					await dbContextTransaction.CommitAsync();
 					return (model, "");
 				}
 				catch (Exception ex)
@@ -128,19 +129,19 @@ namespace AppApuntesNet5.Services
 			}
 		}
 
-		public bool Eliminar(int id, out string mensajeError)
+		public async Task<(bool, string)> Eliminar(int id)
 		{
-			mensajeError = "";  // Inicializa el out como un string vacio
+			string mensajeError = "";  // Inicializa el out como un string vacio
 
 			using (var dbContextTransaction = db.Database.BeginTransaction())
 			{
 				try
 				{
-					ApuntesDetalleTema apuntesDetalleTema = db.ApuntesDetalleTema.AsNoTracking().Where(c => c.id == id).FirstOrDefault();
+					ApuntesDetalleTema apuntesDetalleTema = await db.ApuntesDetalleTema.AsNoTracking().Where(c => c.id == id).FirstOrDefaultAsync();
 
 					db.Entry(apuntesDetalleTema).State = EntityState.Deleted;
-					db.SaveChanges();
-					dbContextTransaction.Commit();
+					await db.SaveChangesAsync();
+					await dbContextTransaction.CommitAsync();
 				}
 				catch (Exception ex)
 				{
@@ -149,7 +150,7 @@ namespace AppApuntesNet5.Services
 				}
 			}
 
-			return string.IsNullOrEmpty(mensajeError);
+			return (string.IsNullOrEmpty(mensajeError), mensajeError);
 		}
 
 

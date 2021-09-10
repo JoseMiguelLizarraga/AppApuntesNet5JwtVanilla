@@ -1,6 +1,6 @@
 ﻿using AppApuntesNet5.Dto;
 using AppApuntesNet5.Models;
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +16,7 @@ namespace AppApuntesNet5.Services
 			this.db = context;
 		}
 
-		public Select2DTO LlenarSelect2(string busqueda, int registrosPorPagina, int numeroPagina)
+		public async Task<Select2DTO> LlenarSelect2(string busqueda, int registrosPorPagina, int numeroPagina)
 		{
 			object dataSalida = null;
 			IQueryable<ApuntesCategoria> consulta = (from a in db.ApuntesCategoria select a);
@@ -26,7 +26,9 @@ namespace AppApuntesNet5.Services
 
 			int cantidadRegistros = consulta.Count();
 			consulta.Skip((numeroPagina - 1) * registrosPorPagina).Take(registrosPorPagina);
-			dataSalida = consulta.ToList().Select(a => new { id = a.id, text = a.titulo }).ToList();
+
+			List<ApuntesCategoria> lista = await consulta.ToListAsync();
+			dataSalida = lista.Select(a => new { id = a.id, text = a.titulo }).ToList();
 
 			return new Select2DTO() { Total = cantidadRegistros, Results = dataSalida};
 		}

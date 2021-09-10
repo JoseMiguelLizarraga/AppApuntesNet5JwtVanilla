@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using AppApuntesNet5.Services;
 using AppApuntesNet5.Dto;
+using System.Threading.Tasks;
 
 namespace AppApuntesNet5.Controllers 
 {
@@ -25,9 +26,9 @@ namespace AppApuntesNet5.Controllers
 
 		[HttpGet] 
 		[Route("llenarSelect2")] 
-		public IActionResult LlenarSelect2(string busqueda, int registrosPorPagina, int numeroPagina) 
+		public async Task<ActionResult<Select2DTO>> LlenarSelect2(string busqueda, int registrosPorPagina, int numeroPagina) 
 		{ 
-			return Ok(_categoriaService.LlenarSelect2(busqueda, registrosPorPagina, numeroPagina)); 
+			return await _categoriaService.LlenarSelect2(busqueda, registrosPorPagina, numeroPagina); 
 		} 
 	} 
 }

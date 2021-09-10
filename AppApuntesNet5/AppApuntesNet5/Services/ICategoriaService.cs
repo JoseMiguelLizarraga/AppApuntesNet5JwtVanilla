@@ -8,6 +8,6 @@ namespace AppApuntesNet5.Services
 {
     public interface ICategoriaService
     {
-        public Select2DTO LlenarSelect2(String busqueda, int registrosPorPagina, int numeroPagina);
+        public Task<Select2DTO> LlenarSelect2(String busqueda, int registrosPorPagina, int numeroPagina);
     }
 }

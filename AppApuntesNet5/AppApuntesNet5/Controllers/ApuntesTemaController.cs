@@ -4,6 +4,9 @@ using AppApuntesNet5.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using AppApuntesNet5.Services;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using AppApuntesNet5.Dto;
 
 namespace AppApuntesNet5.Controllers 
 {
@@ -18,59 +21,60 @@ namespace AppApuntesNet5.Controllers
 		public ApuntesTemaController(ITemaService temaService) 
 		{
 			_temaService = temaService;
-		} 
+		}
 
-		[HttpGet] 
-		public IActionResult Get() 
-		{ 
-			return Ok(_temaService.Listar()); 
-		} 
+
+		[HttpGet]
+		public async Task<ActionResult<List<ApuntesTema>>> Get()
+		{
+			return await _temaService.Listar();
+		}
 
 		[HttpPost] 
 		[Route("llenarDataTable")] 
-		public IActionResult LlenarDataTable([FromQuery] ApuntesTema apuntesTema, int start, int length) 
-		{ 
-			return Ok(_temaService.LlenarDataTableApuntesTema(apuntesTema, start, length));
+		public async Task<ActionResult<DataTableDTO>> LlenarDataTable([FromQuery] ApuntesTema apuntesTema, int start, int length) 
+		{
+			return await _temaService.LlenarDataTableApuntesTema(apuntesTema, start, length);
 		}
 
 		[HttpGet]
 		[Route("llenarSelect2")]
-		public IActionResult LlenarSelect2(string busqueda, int registrosPorPagina, int numeroPagina, int idApuntesCategoria)
+		public async Task<ActionResult<Select2DTO>> LlenarSelect2(string busqueda, int registrosPorPagina, int numeroPagina, int idApuntesCategoria)
 		{
-			return Ok(_temaService.LlenarSelect2(busqueda, registrosPorPagina, numeroPagina, idApuntesCategoria));
+			return await _temaService.LlenarSelect2(busqueda, registrosPorPagina, numeroPagina, idApuntesCategoria);
 		}
 
 		[HttpGet] 
 		[Route("{id:int}")] 
-		public IActionResult BuscarPorId(int id) 
+		public async Task<ActionResult<ApuntesTema>> BuscarPorId(int id) 
 		{ 
-			return Ok(_temaService.BuscarPorId(id)); 
+			return await _temaService.BuscarPorId(id); 
 		} 
 
 		[HttpPost] 
-		public IActionResult Post(ApuntesTema apuntesTema) 
+		public async Task<ActionResult<ApuntesTema>> Post(ApuntesTema apuntesTema) 
 		{
-            (ApuntesTema, string) result = _temaService.Guardar(apuntesTema);
+            (ApuntesTema, string) result = await _temaService.Guardar(apuntesTema);
 
 			if (! string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
 			return Ok(result.Item1);
 		} 
 
 		[HttpPut] 
-		public IActionResult Put(ApuntesTema apuntesTema) 
+		public async Task<ActionResult<ApuntesTema>> Put(ApuntesTema apuntesTema) 
 		{
-			(ApuntesTema, string) result = _temaService.Actualizar(apuntesTema);
+			(ApuntesTema, string) result = await _temaService.Actualizar(apuntesTema);
 
 			if (! string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
 			return Ok(result.Item1);
 		} 
 
 		[HttpDelete("{id}")] 
-		public IActionResult Delete(int id) 
+		public async Task<ActionResult> Delete(int id) 
 		{
-			if (! _temaService.Eliminar(id, out string error))
-				return BadRequest(error);
+			(bool, string) result = await _temaService.Eliminar(id);
 
+			if (! result.Item1) return BadRequest(result.Item2);
 			return Ok();
 		} 
 

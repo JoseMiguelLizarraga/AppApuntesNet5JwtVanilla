@@ -6,7 +6,8 @@ using AppApuntesNet5.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using AppApuntesNet5.Services;
-
+using System.Threading.Tasks;
+using AppApuntesNet5.Dto;
 
 namespace AppApuntesNet5.Controllers
 {
@@ -23,49 +24,49 @@ namespace AppApuntesNet5.Controllers
 		}
 
 		[HttpGet] 
-		public IActionResult Get() 
+		public async Task<ActionResult<List<ApuntesDetalleTema>>> Get() 
 		{ 
-			return Ok(_detalleTemaService.Listar()); 
-		} 
+			return await _detalleTemaService.Listar(); 
+		}
 
 		[HttpPost] 
 		[Route("llenarDataTable")] 
-		public IActionResult LlenarDataTable([FromQuery] ApuntesDetalleTema apuntesDetalleTema, int start, int length) 
+		public async Task<ActionResult<DataTableDTO>> LlenarDataTable([FromQuery] ApuntesDetalleTema apuntesDetalleTema, int start, int length) 
 		{
-			return Ok(_detalleTemaService.LlenarDataTableApuntesDetalleTema(apuntesDetalleTema, start, length));
+			return await _detalleTemaService.LlenarDataTableApuntesDetalleTema(apuntesDetalleTema, start, length);
 		} 
 
 		[HttpGet] 
 		[Route("{id:int}")] 
-		public IActionResult BuscarPorId(int id) 
+		public async Task<ActionResult<ApuntesDetalleTema>> BuscarPorId(int id) 
 		{
-			return Ok(_detalleTemaService.BuscarPorId(id));
+			return await _detalleTemaService.BuscarPorId(id);
 		} 
 
 		[HttpPost] 
-		public IActionResult Post(ApuntesDetalleTema apuntesDetalleTema) 
+		public async Task<ActionResult<ApuntesDetalleTema>> Post(ApuntesDetalleTema apuntesDetalleTema) 
 		{
-			(ApuntesDetalleTema, string) result = _detalleTemaService.Guardar(apuntesDetalleTema);
+			(ApuntesDetalleTema, string) result = await _detalleTemaService.Guardar(apuntesDetalleTema);
 
 			if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
 			return Ok(result.Item1);
 		} 
 
 		[HttpPut] 
-		public IActionResult Put(ApuntesDetalleTema apuntesDetalleTema) 
+		public async Task<ActionResult<ApuntesDetalleTema>> Put(ApuntesDetalleTema apuntesDetalleTema) 
 		{
-			(ApuntesDetalleTema, string) result = _detalleTemaService.Actualizar(apuntesDetalleTema);
+			(ApuntesDetalleTema, string) result = await _detalleTemaService.Actualizar(apuntesDetalleTema);
 
 			if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
 			return Ok(result.Item1);
 		} 
 
 		[HttpDelete("{id}")] 
-		public IActionResult Delete(int id) 
+		public async Task<ActionResult> Delete(int id) 
 		{
-			if (! _detalleTemaService.Eliminar(id, out string error))
-				return BadRequest(error);
+			(bool, string) result = await _detalleTemaService.Eliminar(id);
 
+			if (! result.Item1) return BadRequest(result.Item2);
 			return Ok();
 		}
 	} 
