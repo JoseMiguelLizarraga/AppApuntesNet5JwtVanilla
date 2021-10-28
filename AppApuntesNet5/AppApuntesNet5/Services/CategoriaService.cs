@@ -9,187 +9,189 @@ using System.Threading.Tasks;
 
 namespace AppApuntesNet5.Services
 {
-	public class CategoriaService : ICategoriaService
-	{
-		private readonly IServiceScopeFactory scopeFactory;
-		private List<ApuntesCategoria> Lista { get; set; }  // Esta lista se llena solo una vez consultando la base de datos, y queda en memoria. Despues solo se edita
-		
-		public CategoriaService(IServiceScopeFactory scopeFactory)  // Esto solo se llama una vez
-		{
-			this.scopeFactory = scopeFactory;
-			LlenarLista();
-		}
+    public class CategoriaService : ICategoriaService
+    {
+        private readonly IServiceScopeFactory scopeFactory;
+        private List<ApuntesCategoria> Lista { get; set; }  // Esta lista se llena solo una vez consultando la base de datos, y queda en memoria. Despues solo se edita
 
-		public void LlenarLista()  // Esto solo se llama una vez
-		{
-			using (var scope = scopeFactory.CreateScope()) 
-			{
-				var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();  // Esto es para acceder al ApplicationDbContext desde singleton
-				Lista = db.ApuntesCategoria.ToList();
-			}
-		}
+        public CategoriaService(IServiceScopeFactory scopeFactory)  // Esto solo se llama una vez
+        {
+            this.scopeFactory = scopeFactory;
+            LlenarLista();
+        }
 
-		public DataTableDTO LlenarDataTableApuntesCategoria(ApuntesCategoria apuntesCategoria, int inicio, int registrosPorPagina)
-		{
-			if (apuntesCategoria == null) apuntesCategoria = new ApuntesCategoria();  // En caso de que sea nulo se inicializa 
+        public void LlenarLista()  // Esto solo se llama una vez
+        {
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();  // Esto es para acceder al ApplicationDbContext desde singleton
+                Lista = db.ApuntesCategoria.ToList();
+            }
+        }
 
-			IQueryable<ApuntesCategoria> consulta = Lista.AsQueryable();
+        public DataTableDTO LlenarDataTableApuntesCategoria(ApuntesCategoria apuntesCategoria, int inicio, int registrosPorPagina)
+        {
+            if (apuntesCategoria == null) apuntesCategoria = new ApuntesCategoria();  // En caso de que sea nulo se inicializa 
 
-			if (apuntesCategoria.titulo != null)
-				consulta = consulta.Where(a => a.titulo.ToLower().Contains(apuntesCategoria.titulo.ToLower()));
+            IQueryable<ApuntesCategoria> consulta = Lista.AsQueryable();
 
-			return new DataTableDTO() { 
-				RecordsFiltered = Lista.Count, 
-				RecordsTotal = Lista.Count,
-				Data = consulta.OrderBy(x => x.id).Skip(inicio).Take(registrosPorPagina).ToList()
-			};
-		}
+            if (apuntesCategoria.titulo != null)
+                consulta = consulta.Where(a => a.titulo.ToLower().Contains(apuntesCategoria.titulo.ToLower()));
 
-		public Select2DTO LlenarSelect2(string busqueda, int registrosPorPagina, int numeroPagina)
-		{
-			IQueryable<ApuntesCategoria> consulta = Lista.AsQueryable();
+            return new DataTableDTO()
+            {
+                RecordsFiltered = Lista.Count,
+                RecordsTotal = Lista.Count,
+                Data = consulta.OrderBy(x => x.id).Skip(inicio).Take(registrosPorPagina).ToList()
+            };
+        }
 
-			if (! string.IsNullOrEmpty(busqueda))
-				consulta = consulta.Where(a => a.titulo.ToLower().Contains(busqueda.ToLower()));
+        public Select2DTO LlenarSelect2(string busqueda, int registrosPorPagina, int numeroPagina)
+        {
+            IQueryable<ApuntesCategoria> consulta = Lista.AsQueryable();
 
-			return new Select2DTO() { 
-				Total = Lista.Count, 
-				Results = consulta.Skip((numeroPagina - 1) * registrosPorPagina).Take(registrosPorPagina).Select(a => new { id = a.id, text = a.titulo }).ToList()
-			};
-		}
+            if (!string.IsNullOrEmpty(busqueda))
+                consulta = consulta.Where(a => a.titulo.ToLower().Contains(busqueda.ToLower()));
 
-		public ApuntesCategoria BuscarPorId(int id)
-		{
-			return Lista.FirstOrDefault(x => x.id == id);
-		}
+            return new Select2DTO()
+            {
+                Total = Lista.Count,
+                Results = consulta.Skip((numeroPagina - 1) * registrosPorPagina).Take(registrosPorPagina).Select(a => new { id = a.id, text = a.titulo }).ToList()
+            };
+        }
 
-		public async Task<(ApuntesCategoria, string)> Guardar(ApuntesCategoria objeto)
-		{
-			if (! ValidarApuntesCategoria(objeto, out string error))
-				return (null, error);
+        public ApuntesCategoria BuscarPorId(int id)
+        {
+            return Lista.FirstOrDefault(x => x.id == id);
+        }
 
-			using (var scope = scopeFactory.CreateScope())
-			{
-				var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();  // Esto es para acceder al ApplicationDbContext desde singleton
+        public async Task<(ApuntesCategoria, string)> Guardar(ApuntesCategoria objeto)
+        {
+            if (!ValidarApuntesCategoria(objeto, out string error))
+                return (null, error);
 
-				using (var dbContextTransaction = db.Database.BeginTransaction())
-				{
-					try
-					{
-						ApuntesCategoria apuntesCategoria = new ApuntesCategoria();
-						apuntesCategoria.titulo = objeto.titulo;
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();  // Esto es para acceder al ApplicationDbContext desde singleton
 
-						await db.ApuntesCategoria.AddAsync(apuntesCategoria); // Insertar 
+                using (var dbContextTransaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        ApuntesCategoria apuntesCategoria = new ApuntesCategoria();
+                        apuntesCategoria.titulo = objeto.titulo;
 
-						await db.SaveChangesAsync();
-						await dbContextTransaction.CommitAsync();
+                        await db.ApuntesCategoria.AddAsync(apuntesCategoria); // Insertar 
 
-						Lista.Add(apuntesCategoria);   // Se agrega a la lista unica
+                        await db.SaveChangesAsync();
+                        await dbContextTransaction.CommitAsync();
 
-						return (apuntesCategoria, "");
-					}
-					catch (Exception ex)
-					{
-						dbContextTransaction.Rollback();
+                        Lista.Add(apuntesCategoria);   // Se agrega a la lista unica
 
-						error = ex.InnerException != null && ex.InnerException.InnerException != null ?
-							ex.InnerException.InnerException.Message :  // Lanza errores SQL 
-							ex.Message;
+                        return (apuntesCategoria, "");
+                    }
+                    catch (Exception ex)
+                    {
+                        dbContextTransaction.Rollback();
 
-						return (null, error);
-					}
-				}
-			}
-		}
+                        error = ex.InnerException != null && ex.InnerException.InnerException != null ?
+                            ex.InnerException.InnerException.Message :  // Lanza errores SQL 
+                            ex.Message;
 
-		
-		public async Task<(ApuntesCategoria, string)> Actualizar(ApuntesCategoria apuntesCategoria)
-		{
-			if (!ValidarApuntesCategoria(apuntesCategoria, out string error))
-				return (null, error);
+                        return (null, error);
+                    }
+                }
+            }
+        }
 
-			using (var scope = scopeFactory.CreateScope())
-			{
-				var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();  // Esto es para acceder al ApplicationDbContext desde singleton
 
-				using (var dbContextTransaction = db.Database.BeginTransaction())
-				{
-					try
-					{
-						ApuntesCategoria objeto = await db.ApuntesCategoria.AsNoTracking().Where(x => x.id == apuntesCategoria.id).FirstOrDefaultAsync();
-						objeto.titulo = apuntesCategoria.titulo;
+        public async Task<(ApuntesCategoria, string)> Actualizar(ApuntesCategoria apuntesCategoria)
+        {
+            if (!ValidarApuntesCategoria(apuntesCategoria, out string error))
+                return (null, error);
 
-						db.Entry(objeto).State = EntityState.Modified; // Actualizar ApuntesCategoria 
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();  // Esto es para acceder al ApplicationDbContext desde singleton
 
-						await db.SaveChangesAsync();
-						await dbContextTransaction.CommitAsync();
+                using (var dbContextTransaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        ApuntesCategoria objeto = await db.ApuntesCategoria.AsNoTracking().Where(x => x.id == apuntesCategoria.id).FirstOrDefaultAsync();
+                        objeto.titulo = apuntesCategoria.titulo;
 
-						// Actualiza el elemento de la lista unica
-						ApuntesCategoria elementoLista = Lista.Where(x => x.id == objeto.id).FirstOrDefault();
-						elementoLista.titulo = objeto.titulo;
+                        db.Entry(objeto).State = EntityState.Modified; // Actualizar ApuntesCategoria 
 
-						return (apuntesCategoria, "");
-					}
-					catch (Exception ex)
-					{
-						dbContextTransaction.Rollback();   // No se realizan los cambios 
+                        await db.SaveChangesAsync();
+                        await dbContextTransaction.CommitAsync();
 
-						error = ex.InnerException != null && ex.InnerException.InnerException != null ?
-							ex.InnerException.InnerException.Message :  // Lanza errores SQL 
-							ex.Message;
+                        // Actualiza el elemento de la lista unica
+                        ApuntesCategoria elementoLista = Lista.Where(x => x.id == objeto.id).FirstOrDefault();
+                        elementoLista.titulo = objeto.titulo;
 
-						return (null, error);
-					}
-				}
-			}
-		}
+                        return (apuntesCategoria, "");
+                    }
+                    catch (Exception ex)
+                    {
+                        dbContextTransaction.Rollback();   // No se realizan los cambios 
 
-		public async Task<(bool, string)> Eliminar(int id)
-		{
-			string mensajeError = "";
+                        error = ex.InnerException != null && ex.InnerException.InnerException != null ?
+                            ex.InnerException.InnerException.Message :  // Lanza errores SQL 
+                            ex.Message;
 
-			using (var scope = scopeFactory.CreateScope())
-			{
-				var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();  // Esto es para acceder al ApplicationDbContext desde singleton
+                        return (null, error);
+                    }
+                }
+            }
+        }
 
-				using (var dbContextTransaction = db.Database.BeginTransaction())
-				{
-					try
-					{
-						ApuntesCategoria apuntesCategoria = await db.ApuntesCategoria.AsNoTracking().Where(c => c.id == id).FirstOrDefaultAsync();
+        public async Task<(bool, string)> Eliminar(int id)
+        {
+            string mensajeError = "";
 
-						db.ApuntesTema.RemoveRange(
-							db.ApuntesTema.Where(c => c.apuntesCategoria.id == id).ToList()
-						);
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();  // Esto es para acceder al ApplicationDbContext desde singleton
 
-						db.Entry(apuntesCategoria).State = EntityState.Deleted;
-						await db.SaveChangesAsync();
-						await dbContextTransaction.CommitAsync();
+                using (var dbContextTransaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        ApuntesCategoria apuntesCategoria = await db.ApuntesCategoria.AsNoTracking().Where(c => c.id == id).FirstOrDefaultAsync();
 
-						// Remueve de la lista unica
-						ApuntesCategoria elemento = Lista.Single(x => x.id == apuntesCategoria.id);
-						Lista.Remove(elemento);
-					}
-					catch (Exception ex)
-					{
-						dbContextTransaction.Rollback();   // No se realizan los cambios 
-						mensajeError = ex.Message;
-					}
-				}
-			}
+                        db.ApuntesTema.RemoveRange(
+                            db.ApuntesTema.Where(c => c.apuntesCategoria.id == id).ToList()
+                        );
 
-			return (string.IsNullOrEmpty(mensajeError), mensajeError);
-		}
-		
+                        db.Entry(apuntesCategoria).State = EntityState.Deleted;
+                        await db.SaveChangesAsync();
+                        await dbContextTransaction.CommitAsync();
 
-		public bool ValidarApuntesCategoria(ApuntesCategoria apuntesCategoria, out string mensajeError)
-		{
-			mensajeError = "";  // Inicializa el out como un string vacio
+                        // Remueve de la lista unica
+                        ApuntesCategoria elemento = Lista.Single(x => x.id == apuntesCategoria.id);
+                        Lista.Remove(elemento);
+                    }
+                    catch (Exception ex)
+                    {
+                        dbContextTransaction.Rollback();   // No se realizan los cambios 
+                        mensajeError = ex.Message;
+                    }
+                }
+            }
 
-			if (apuntesCategoria.titulo == null)
-				mensajeError = "El campo Titulo no posee un valor";
+            return (string.IsNullOrEmpty(mensajeError), mensajeError);
+        }
 
-			return string.IsNullOrEmpty(mensajeError);  // El retorno booleano dependera de si se encontro un error o no
-		}
-	}
+
+        public bool ValidarApuntesCategoria(ApuntesCategoria apuntesCategoria, out string mensajeError)
+        {
+            mensajeError = "";  // Inicializa el out como un string vacio
+
+            if (apuntesCategoria.titulo == null)
+                mensajeError = "El campo Titulo no posee un valor";
+
+            return string.IsNullOrEmpty(mensajeError);  // El retorno booleano dependera de si se encontro un error o no
+        }
+    }
 }

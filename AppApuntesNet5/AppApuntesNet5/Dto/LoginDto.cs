@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace AppApuntesNet5.Dto
 {
-    public class LoginDto   // UserInfo
+    public class LoginDto
     {
-        public string username { get; set; }    // Email
+        public string username { get; set; }
         public string password { get; set; }
     }
 }

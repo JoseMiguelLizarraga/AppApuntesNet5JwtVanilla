@@ -1,8 +1,0 @@
-
-
-https://localhost:44322/swagger/index.html
-
-
-Heroku no soporta nativamente a .NET Core, para eso, hay que hacerlo mediante container docker.
-
-
