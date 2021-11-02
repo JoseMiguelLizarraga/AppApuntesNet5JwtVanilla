@@ -38,8 +38,8 @@ namespace WebApiPaises.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var user = new UsuarioAutenticado { UserName = model.username, Email = model.username };
-                    var result = await _userManager.CreateAsync(user, model.password);
+                    var user = new UsuarioAutenticado { UserName = model.Username, Email = model.Username };
+                    var result = await _userManager.CreateAsync(user, model.Password);
 
                     if (result.Succeeded)
                     {
@@ -67,7 +67,7 @@ namespace WebApiPaises.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(userInfo.username, userInfo.password, isPersistent: false, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(userInfo.Username, userInfo.Password, isPersistent: false, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     return BuildToken(userInfo);
@@ -88,7 +88,7 @@ namespace WebApiPaises.Controllers
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.username),
+                new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

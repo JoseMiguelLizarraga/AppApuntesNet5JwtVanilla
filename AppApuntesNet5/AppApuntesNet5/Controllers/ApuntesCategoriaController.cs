@@ -9,6 +9,7 @@ using AppApuntesNet5.Services;
 using AppApuntesNet5.Dto;
 using System.Threading.Tasks;
 using System.Linq;
+using AppApuntesNet5.Mappings;
 
 namespace AppApuntesNet5.Controllers
 {
@@ -18,11 +19,11 @@ namespace AppApuntesNet5.Controllers
     public class ApuntesCategoriaController : ControllerBase
     {
 
-        private readonly ICategoriaService _categoriaService;
+        private readonly ICategoriaService _servicio;
 
-        public ApuntesCategoriaController(ICategoriaService categoriaService)
+        public ApuntesCategoriaController(ICategoriaService servicio)
         {
-            _categoriaService = categoriaService;
+            _servicio = servicio;
         }
 
 
@@ -30,7 +31,7 @@ namespace AppApuntesNet5.Controllers
         [Route("llenarDataTable")]
         public IActionResult llenarDataTable([FromQuery] ApuntesCategoria apuntesCategoria, int start, int length)
         {
-            DataTableDTO respuesta = _categoriaService.LlenarDataTableApuntesCategoria(apuntesCategoria, start, length);
+            DataTableDTO respuesta = _servicio.LlenarDataTableApuntesCategoria(apuntesCategoria, start, length);
             return Ok(respuesta);
         }
 
@@ -38,39 +39,40 @@ namespace AppApuntesNet5.Controllers
         [Route("llenarSelect2")]
         public ActionResult<Select2DTO> LlenarSelect2(string busqueda, int registrosPorPagina, int numeroPagina)
         {
-            Select2DTO retorno = _categoriaService.LlenarSelect2(busqueda, registrosPorPagina, numeroPagina);
+            Select2DTO retorno = _servicio.LlenarSelect2(busqueda, registrosPorPagina, numeroPagina);
             return retorno;
         }
 
         [HttpGet]
         [Route("{id:int}")]
-        public ActionResult<ApuntesCategoria> BuscarPorId(int id)
+        public ActionResult<ApuntesCategoriaDTO> BuscarPorId(int id)
         {
-            return _categoriaService.BuscarPorId(id);
+            ApuntesCategoria apuntesCategoria = _servicio.BuscarPorId(id);
+            return apuntesCategoria.ToDTO();
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApuntesCategoria>> Post(ApuntesCategoria apuntesCategoria)
+        public async Task<ActionResult<ApuntesCategoriaDTO>> Post(ApuntesCategoria apuntesCategoria)
         {
-            (ApuntesCategoria, string) result = await _categoriaService.Guardar(apuntesCategoria);
+            (ApuntesCategoria, string) result = await _servicio.Guardar(apuntesCategoria);
 
             if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
-            return Ok(result.Item1);
+            return Ok(result.Item1.ToDTO());
         }
 
         [HttpPut]
-        public async Task<ActionResult<ApuntesCategoria>> Put(ApuntesCategoria apuntesCategoria)
+        public async Task<ActionResult<ApuntesCategoriaDTO>> Put(ApuntesCategoria apuntesCategoria)
         {
-            (ApuntesCategoria, string) result = await _categoriaService.Actualizar(apuntesCategoria);
+            (ApuntesCategoria, string) result = await _servicio.Actualizar(apuntesCategoria);
 
             if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
-            return Ok(result.Item1);
+            return Ok(result.Item1.ToDTO());
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            (bool, string) result = await _categoriaService.Eliminar(id);
+            (bool, string) result = await _servicio.Eliminar(id);
 
             if (!result.Item1) return BadRequest(result.Item2);
             return Ok();

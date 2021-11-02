@@ -26,9 +26,9 @@ namespace AppApuntesNet5.Services
         public async Task<ApuntesTema> BuscarPorId(int id)
         {
             var v = (from c in db.ApuntesTema
-            .Include(i => i.apuntesCategoria)
-            .Include(i => i.listaApuntesDetalleTema)
-                     where c.id == id
+            .Include(i => i.ApuntesCategoria)
+            .Include(i => i.ListaApuntesDetalleTema)
+                     where c.Id == id
                      select c);
 
             return await v.Cast<ApuntesTema>().FirstOrDefaultAsync();
@@ -39,17 +39,17 @@ namespace AppApuntesNet5.Services
             if (apuntesTema == null) apuntesTema = new ApuntesTema();  // En caso de que sea nulo se inicializa 
 
             IQueryable<ApuntesTema> v = (from a in db.ApuntesTema
-                .Include(c => c.apuntesCategoria)
+                .Include(c => c.ApuntesCategoria)
                                          select a);
 
-            if (apuntesTema.apuntesCategoria != null)
-                v = v.Where(a => a.apuntesCategoriaId == apuntesTema.apuntesCategoria.id);
+            if (apuntesTema.ApuntesCategoria != null)
+                v = v.Where(a => a.ApuntesCategoriaId == apuntesTema.ApuntesCategoria.Id);
 
-            if (!string.IsNullOrEmpty(apuntesTema.titulo))
-                v = v.Where(a => a.titulo.Contains(apuntesTema.titulo));
+            if (!string.IsNullOrEmpty(apuntesTema.Titulo))
+                v = v.Where(a => a.Titulo.Contains(apuntesTema.Titulo));
 
             int totalRegistros = v.Count();
-            v = v.OrderBy(x => x.id).Skip(inicio).Take(registrosPorPagina);
+            v = v.OrderBy(x => x.Id).Skip(inicio).Take(registrosPorPagina);
 
             List<ApuntesTema> lista = await v.ToListAsync();
             return new DataTableDTO() { RecordsFiltered = totalRegistros, RecordsTotal = totalRegistros, Data = lista };
@@ -63,16 +63,16 @@ namespace AppApuntesNet5.Services
             IQueryable<ApuntesTema> consulta = (from a in db.ApuntesTema select a);
 
             if (idApuntesCategoria != 0)
-                consulta = consulta.Where(a => a.apuntesCategoriaId == idApuntesCategoria);
+                consulta = consulta.Where(a => a.ApuntesCategoriaId == idApuntesCategoria);
 
             if (!string.IsNullOrEmpty(busqueda))
-                consulta = consulta.Where(a => a.titulo.Contains(busqueda));
+                consulta = consulta.Where(a => a.Titulo.Contains(busqueda));
 
             cantidadRegistros = consulta.Count();
             consulta.Skip((numeroPagina - 1) * registrosPorPagina).Take(registrosPorPagina);
 
             List<ApuntesTema> lista = await consulta.ToListAsync();
-            dataSalida = lista.Select(a => new { id = a.id, text = a.titulo }).ToList();
+            dataSalida = lista.Select(a => new { id = a.Id, text = a.Titulo }).ToList();
 
             return new Select2DTO() { Total = cantidadRegistros, Results = dataSalida };
         }
@@ -82,18 +82,18 @@ namespace AppApuntesNet5.Services
             if (!ValidarApuntesTema(apuntesTema, out string error))
                 return (null, error);
 
-            apuntesTema.apuntesCategoriaId = apuntesTema.apuntesCategoria.id;
-            apuntesTema.apuntesCategoria = null;
+            apuntesTema.ApuntesCategoriaId = apuntesTema.ApuntesCategoria.Id;
+            apuntesTema.ApuntesCategoria = null;
 
             using (var dbContextTransaction = db.Database.BeginTransaction())
             {
                 try
                 {
-                    if (apuntesTema.listaApuntesDetalleTema != null && apuntesTema.listaApuntesDetalleTema.Count > 0)
+                    if (apuntesTema.ListaApuntesDetalleTema != null && apuntesTema.ListaApuntesDetalleTema.Count > 0)
                     {
-                        foreach (ApuntesDetalleTema detalle in apuntesTema.listaApuntesDetalleTema)
+                        foreach (ApuntesDetalleTema detalle in apuntesTema.ListaApuntesDetalleTema)
                         {
-                            detalle.apuntesTema = apuntesTema;
+                            detalle.ApuntesTema = apuntesTema;
                             await db.ApuntesDetalleTema.AddAsync(detalle);
                         }
                     }
@@ -125,46 +125,46 @@ namespace AppApuntesNet5.Services
             {
                 try
                 {
-                    ApuntesTema objeto = await db.ApuntesTema.AsNoTracking().Where(x => x.id == apuntesTema.id).FirstOrDefaultAsync();
+                    ApuntesTema objeto = await db.ApuntesTema.AsNoTracking().Where(x => x.Id == apuntesTema.Id).FirstOrDefaultAsync();
 
-                    objeto.apuntesCategoriaId = apuntesTema.apuntesCategoria.id;
-                    objeto.titulo = apuntesTema.titulo;
+                    objeto.ApuntesCategoriaId = apuntesTema.ApuntesCategoria.Id;
+                    objeto.Titulo = apuntesTema.Titulo;
 
 
                     db.Entry(objeto).State = EntityState.Modified; 
 
-                    List<ApuntesDetalleTema> listaApuntesDetalleTema = apuntesTema.listaApuntesDetalleTema.ToList();
+                    List<ApuntesDetalleTema> listaApuntesDetalleTema = apuntesTema.ListaApuntesDetalleTema.ToList();
 
                     if (listaApuntesDetalleTema.Count() > 0)
                     {
-                        if (listaApuntesDetalleTema.Count == 1 && listaApuntesDetalleTema.Any(c => c.id == 0))  // Si solo se recibio un detalle y es nuevo 
+                        if (listaApuntesDetalleTema.Count == 1 && listaApuntesDetalleTema.Any(c => c.Id == 0))  // Si solo se recibio un detalle y es nuevo 
                         {
                             db.ApuntesDetalleTema.RemoveRange(
-                                db.ApuntesDetalleTema.Where(c => c.apuntesTema.id == apuntesTema.id).ToList()
+                                db.ApuntesDetalleTema.Where(c => c.ApuntesTema.Id == apuntesTema.Id).ToList()
                             );
                         }
-                        if (listaApuntesDetalleTema.Any(c => c.id > 0))  // Si al menos un detalle trae id  
+                        if (listaApuntesDetalleTema.Any(c => c.Id > 0))  // Si al menos un detalle trae id  
                         {
-                            List<int> listaIdDetalles = listaApuntesDetalleTema.Where(c => c.id > 0).Select(c => c.id).ToList();
+                            List<int> listaIdDetalles = listaApuntesDetalleTema.Where(c => c.Id > 0).Select(c => c.Id).ToList();
 
                             db.ApuntesDetalleTema.RemoveRange(
-                                db.ApuntesDetalleTema.Where(c => !listaIdDetalles.Contains(c.id) &&
-                                c.apuntesTema.id == apuntesTema.id).ToList()
+                                db.ApuntesDetalleTema.Where(c => !listaIdDetalles.Contains(c.Id) &&
+                                c.ApuntesTema.Id == apuntesTema.Id).ToList()
                             );
                         }
                         foreach (ApuntesDetalleTema detalle in listaApuntesDetalleTema.ToList())
                         {
-                            if (detalle.id > 0)  // Si trae id significa que esta almacenado. Se actualiza 
+                            if (detalle.Id > 0)  // Si trae id significa que esta almacenado. Se actualiza 
                             {
-                                ApuntesDetalleTema detalleBuscado = db.ApuntesDetalleTema.AsNoTracking().Where(c => c.id == detalle.id).FirstOrDefault();
-                                detalleBuscado.rutaFoto = detalle.rutaFoto;
-                                detalleBuscado.contenido = detalle.contenido;
-                                detalleBuscado.titulo = detalle.titulo;
+                                ApuntesDetalleTema detalleBuscado = db.ApuntesDetalleTema.AsNoTracking().Where(c => c.Id == detalle.Id).FirstOrDefault();
+                                detalleBuscado.RutaFoto = detalle.RutaFoto;
+                                detalleBuscado.Contenido = detalle.Contenido;
+                                detalleBuscado.Titulo = detalle.Titulo;
                                 db.Entry(detalleBuscado).State = EntityState.Modified;
                             }
                             else  // Si no esta guardado el detalle recorrido, se agrega 
                             {
-                                detalle.apuntesTema = objeto;
+                                detalle.ApuntesTema = objeto;
                                 await db.ApuntesDetalleTema.AddAsync(detalle);
                             }
                         }
@@ -172,7 +172,7 @@ namespace AppApuntesNet5.Services
                     else  // Si no se recibieron detalles de la clase ApuntesDetalleTema 
                     {
                         db.ApuntesDetalleTema.RemoveRange(
-                            db.ApuntesDetalleTema.Where(c => c.apuntesTema.id == apuntesTema.id).ToList()
+                            db.ApuntesDetalleTema.Where(c => c.ApuntesTema.Id == apuntesTema.Id).ToList()
                         );
                     }
 
@@ -199,10 +199,10 @@ namespace AppApuntesNet5.Services
             {
                 try
                 {
-                    ApuntesTema apuntesTema = await db.ApuntesTema.AsNoTracking().Where(c => c.id == id).FirstOrDefaultAsync();
+                    ApuntesTema apuntesTema = await db.ApuntesTema.AsNoTracking().Where(c => c.Id == id).FirstOrDefaultAsync();
 
                     db.ApuntesDetalleTema.RemoveRange(
-                        db.ApuntesDetalleTema.Where(c => c.apuntesTema.id == id).ToList()
+                        db.ApuntesDetalleTema.Where(c => c.ApuntesTema.Id == id).ToList()
                     );
 
                     db.Entry(apuntesTema).State = EntityState.Deleted;
@@ -223,22 +223,22 @@ namespace AppApuntesNet5.Services
         {
             mensajeError = "";
 
-            if (apuntesTema.apuntesCategoria == null)
+            if (apuntesTema.ApuntesCategoria == null)
                 mensajeError = "El campo apuntesCategoria no posee un valor";
 
-            else if (string.IsNullOrEmpty(apuntesTema.titulo))
+            else if (string.IsNullOrEmpty(apuntesTema.Titulo))
                 mensajeError = "El campo titulo no posee un valor";
 
             else
             {
-                foreach (ApuntesDetalleTema c in apuntesTema.listaApuntesDetalleTema)
+                foreach (ApuntesDetalleTema c in apuntesTema.ListaApuntesDetalleTema)
                 {
-                    if (c.contenido == null)
+                    if (c.Contenido == null)
                     {
                         mensajeError = "Un detalle de tipo ApuntesDetalleTema tiene vacío el campo contenido";
                         break;
                     }
-                    if (string.IsNullOrEmpty(c.titulo))
+                    if (string.IsNullOrEmpty(c.Titulo))
                     {
                         mensajeError = "Un detalle de tipo ApuntesDetalleTema tiene vacío el campo titulo";
                         break;

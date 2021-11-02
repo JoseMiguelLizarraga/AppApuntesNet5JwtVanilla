@@ -11,12 +11,12 @@ namespace AppApuntesNet5.Models
     {
         [Key]
         [Column("id")]
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [Column("titulo")]
-        public string titulo { get; set; }
+        public string Titulo { get; set; }
 
-        public virtual List<ApuntesTema> listaApuntesTema { get; set; } = new List<ApuntesTema>();
+        public virtual List<ApuntesTema> ListaApuntesTema { get; set; } = new List<ApuntesTema>();
 
     }
 

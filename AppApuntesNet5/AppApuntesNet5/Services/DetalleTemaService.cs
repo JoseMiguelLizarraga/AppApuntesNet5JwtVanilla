@@ -26,8 +26,8 @@ namespace AppApuntesNet5.Services
         public async Task<ApuntesDetalleTema> BuscarPorId(int id)
         {
             var v = (from c in db.ApuntesDetalleTema
-                .Include(i => i.apuntesTema)
-                     where c.id == id
+                .Include(i => i.ApuntesTema)
+                     where c.Id == id
                      select c);
 
             return await v.Cast<ApuntesDetalleTema>().FirstOrDefaultAsync();
@@ -38,25 +38,25 @@ namespace AppApuntesNet5.Services
             if (apuntesDetalleTema == null) apuntesDetalleTema = new ApuntesDetalleTema();  // En caso de que sea nulo se inicializa 
 
             IQueryable<ApuntesDetalleTema> v = (from a in db.ApuntesDetalleTema
-                .Include(c => c.apuntesTema)
-                .Include(c => c.apuntesTema.apuntesCategoria)
+                .Include(c => c.ApuntesTema)
+                .Include(c => c.ApuntesTema.ApuntesCategoria)
                                                 select a);
 
-            if (apuntesDetalleTema.apuntesTema != null && apuntesDetalleTema.apuntesTema.apuntesCategoria != null && apuntesDetalleTema.apuntesTema.apuntesCategoria.id != 0)
-                v = v.Where(a => a.apuntesTema.apuntesCategoria.id == apuntesDetalleTema.apuntesTema.apuntesCategoria.id);
+            if (apuntesDetalleTema.ApuntesTema != null && apuntesDetalleTema.ApuntesTema.ApuntesCategoria != null && apuntesDetalleTema.ApuntesTema.ApuntesCategoria.Id != 0)
+                v = v.Where(a => a.ApuntesTema.ApuntesCategoria.Id == apuntesDetalleTema.ApuntesTema.ApuntesCategoria.Id);
 
-            if (apuntesDetalleTema.apuntesTema != null && apuntesDetalleTema.apuntesTema.id != 0)
-                v = v.Where(a => a.apuntesTemaId == apuntesDetalleTema.apuntesTema.id);
+            if (apuntesDetalleTema.ApuntesTema != null && apuntesDetalleTema.ApuntesTema.Id != 0)
+                v = v.Where(a => a.ApuntesTemaId == apuntesDetalleTema.ApuntesTema.Id);
 
-            if (!string.IsNullOrEmpty(apuntesDetalleTema.rutaFoto))
-                v = v.Where(a => a.rutaFoto.Contains(apuntesDetalleTema.rutaFoto));
+            if (!string.IsNullOrEmpty(apuntesDetalleTema.RutaFoto))
+                v = v.Where(a => a.RutaFoto.Contains(apuntesDetalleTema.RutaFoto));
 
-            if (!string.IsNullOrEmpty(apuntesDetalleTema.titulo))
-                v = v.Where(a => a.titulo.Contains(apuntesDetalleTema.titulo));
+            if (!string.IsNullOrEmpty(apuntesDetalleTema.Titulo))
+                v = v.Where(a => a.Titulo.Contains(apuntesDetalleTema.Titulo));
 
 
             int totalRegistros = v.Count();
-            v = v.OrderBy(x => x.id).Skip(inicio).Take(registrosPorPagina);
+            v = v.OrderBy(x => x.Id).Skip(inicio).Take(registrosPorPagina);
 
             List<ApuntesDetalleTema> lista = await v.ToListAsync();
             return new DataTableDTO() { RecordsFiltered = totalRegistros, RecordsTotal = totalRegistros, Data = lista };
@@ -73,10 +73,10 @@ namespace AppApuntesNet5.Services
                 {
                     ApuntesDetalleTema model = new ApuntesDetalleTema()
                     {
-                        apuntesTemaId = objeto.apuntesTema.id,
-                        titulo = objeto.titulo,
-                        contenido = objeto.contenido,
-                        rutaFoto = objeto.rutaFoto
+                        ApuntesTemaId = objeto.ApuntesTema.Id,
+                        Titulo = objeto.Titulo,
+                        Contenido = objeto.Contenido,
+                        RutaFoto = objeto.RutaFoto
                     };
 
                     await db.ApuntesDetalleTema.AddAsync(model); // Insertar 
@@ -106,12 +106,12 @@ namespace AppApuntesNet5.Services
             {
                 try
                 {
-                    ApuntesDetalleTema model = await db.ApuntesDetalleTema.AsNoTracking().Where(x => x.id == objeto.id).FirstOrDefaultAsync();
+                    ApuntesDetalleTema model = await db.ApuntesDetalleTema.AsNoTracking().Where(x => x.Id == objeto.Id).FirstOrDefaultAsync();
 
-                    model.apuntesTema = objeto.apuntesTema;
-                    model.rutaFoto = objeto.rutaFoto;
-                    model.contenido = objeto.contenido;
-                    model.titulo = objeto.titulo;
+                    model.ApuntesTema = objeto.ApuntesTema;
+                    model.RutaFoto = objeto.RutaFoto;
+                    model.Contenido = objeto.Contenido;
+                    model.Titulo = objeto.Titulo;
 
                     db.Entry(model).State = EntityState.Modified;
 
@@ -138,7 +138,7 @@ namespace AppApuntesNet5.Services
             {
                 try
                 {
-                    ApuntesDetalleTema apuntesDetalleTema = await db.ApuntesDetalleTema.AsNoTracking().Where(c => c.id == id).FirstOrDefaultAsync();
+                    ApuntesDetalleTema apuntesDetalleTema = await db.ApuntesDetalleTema.AsNoTracking().Where(c => c.Id == id).FirstOrDefaultAsync();
 
                     db.Entry(apuntesDetalleTema).State = EntityState.Deleted;
                     await db.SaveChangesAsync();
@@ -159,13 +159,13 @@ namespace AppApuntesNet5.Services
         {
             mensajeError = "";  // Inicializa el out como un string vacio
 
-            if (apuntesDetalleTema.apuntesTema == null)
+            if (apuntesDetalleTema.ApuntesTema == null)
                 mensajeError = "El campo apuntesTema no posee un valor";
 
-            else if (apuntesDetalleTema.contenido == null)
+            else if (apuntesDetalleTema.Contenido == null)
                 mensajeError = "El campo contenido no posee un valor";
 
-            else if (string.IsNullOrEmpty(apuntesDetalleTema.titulo))
+            else if (string.IsNullOrEmpty(apuntesDetalleTema.Titulo))
                 mensajeError = "El campo titulo no posee un valor";
 
             return string.IsNullOrEmpty(mensajeError);  // El retorno booleano dependera de si se encontro un error o no

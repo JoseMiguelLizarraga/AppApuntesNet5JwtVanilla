@@ -35,14 +35,14 @@ namespace AppApuntesNet5.Services
 
             IQueryable<ApuntesCategoria> consulta = Lista.AsQueryable();
 
-            if (apuntesCategoria.titulo != null)
-                consulta = consulta.Where(a => a.titulo.ToLower().Contains(apuntesCategoria.titulo.ToLower()));
+            if (apuntesCategoria.Titulo != null)
+                consulta = consulta.Where(a => a.Titulo.ToLower().Contains(apuntesCategoria.Titulo.ToLower()));
 
             return new DataTableDTO()
             {
                 RecordsFiltered = Lista.Count,
                 RecordsTotal = Lista.Count,
-                Data = consulta.OrderBy(x => x.id).Skip(inicio).Take(registrosPorPagina).ToList()
+                Data = consulta.OrderBy(x => x.Id).Skip(inicio).Take(registrosPorPagina).ToList()
             };
         }
 
@@ -51,18 +51,18 @@ namespace AppApuntesNet5.Services
             IQueryable<ApuntesCategoria> consulta = Lista.AsQueryable();
 
             if (!string.IsNullOrEmpty(busqueda))
-                consulta = consulta.Where(a => a.titulo.ToLower().Contains(busqueda.ToLower()));
+                consulta = consulta.Where(a => a.Titulo.ToLower().Contains(busqueda.ToLower()));
 
             return new Select2DTO()
             {
                 Total = Lista.Count,
-                Results = consulta.Skip((numeroPagina - 1) * registrosPorPagina).Take(registrosPorPagina).Select(a => new { id = a.id, text = a.titulo }).ToList()
+                Results = consulta.Skip((numeroPagina - 1) * registrosPorPagina).Take(registrosPorPagina).Select(a => new { id = a.Id, text = a.Titulo }).ToList()
             };
         }
 
         public ApuntesCategoria BuscarPorId(int id)
         {
-            return Lista.FirstOrDefault(x => x.id == id);
+            return Lista.FirstOrDefault(x => x.Id == id);
         }
 
         public async Task<(ApuntesCategoria, string)> Guardar(ApuntesCategoria objeto)
@@ -79,7 +79,7 @@ namespace AppApuntesNet5.Services
                     try
                     {
                         ApuntesCategoria apuntesCategoria = new ApuntesCategoria();
-                        apuntesCategoria.titulo = objeto.titulo;
+                        apuntesCategoria.Titulo = objeto.Titulo;
 
                         await db.ApuntesCategoria.AddAsync(apuntesCategoria); // Insertar 
 
@@ -118,8 +118,8 @@ namespace AppApuntesNet5.Services
                 {
                     try
                     {
-                        ApuntesCategoria objeto = await db.ApuntesCategoria.AsNoTracking().Where(x => x.id == apuntesCategoria.id).FirstOrDefaultAsync();
-                        objeto.titulo = apuntesCategoria.titulo;
+                        ApuntesCategoria objeto = await db.ApuntesCategoria.AsNoTracking().Where(x => x.Id == apuntesCategoria.Id).FirstOrDefaultAsync();
+                        objeto.Titulo = apuntesCategoria.Titulo;
 
                         db.Entry(objeto).State = EntityState.Modified; // Actualizar ApuntesCategoria 
 
@@ -127,8 +127,8 @@ namespace AppApuntesNet5.Services
                         await dbContextTransaction.CommitAsync();
 
                         // Actualiza el elemento de la lista unica
-                        ApuntesCategoria elementoLista = Lista.Where(x => x.id == objeto.id).FirstOrDefault();
-                        elementoLista.titulo = objeto.titulo;
+                        ApuntesCategoria elementoLista = Lista.Where(x => x.Id == objeto.Id).FirstOrDefault();
+                        elementoLista.Titulo = objeto.Titulo;
 
                         return (apuntesCategoria, "");
                     }
@@ -158,10 +158,10 @@ namespace AppApuntesNet5.Services
                 {
                     try
                     {
-                        ApuntesCategoria apuntesCategoria = await db.ApuntesCategoria.AsNoTracking().Where(c => c.id == id).FirstOrDefaultAsync();
+                        ApuntesCategoria apuntesCategoria = await db.ApuntesCategoria.AsNoTracking().Where(c => c.Id == id).FirstOrDefaultAsync();
 
                         db.ApuntesTema.RemoveRange(
-                            db.ApuntesTema.Where(c => c.apuntesCategoria.id == id).ToList()
+                            db.ApuntesTema.Where(c => c.ApuntesCategoria.Id == id).ToList()
                         );
 
                         db.Entry(apuntesCategoria).State = EntityState.Deleted;
@@ -169,7 +169,7 @@ namespace AppApuntesNet5.Services
                         await dbContextTransaction.CommitAsync();
 
                         // Remueve de la lista unica
-                        ApuntesCategoria elemento = Lista.Single(x => x.id == apuntesCategoria.id);
+                        ApuntesCategoria elemento = Lista.Single(x => x.Id == apuntesCategoria.Id);
                         Lista.Remove(elemento);
                     }
                     catch (Exception ex)
@@ -188,7 +188,7 @@ namespace AppApuntesNet5.Services
         {
             mensajeError = "";  // Inicializa el out como un string vacio
 
-            if (apuntesCategoria.titulo == null)
+            if (apuntesCategoria.Titulo == null)
                 mensajeError = "El campo Titulo no posee un valor";
 
             return string.IsNullOrEmpty(mensajeError);  // El retorno booleano dependera de si se encontro un error o no

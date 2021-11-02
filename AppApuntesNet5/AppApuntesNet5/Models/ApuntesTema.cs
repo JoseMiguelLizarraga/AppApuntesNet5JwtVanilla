@@ -9,20 +9,20 @@ namespace AppApuntesNet5.Models
     [Table("apuntes_tema")]
     public class ApuntesTema
     {
-        public virtual ApuntesCategoria apuntesCategoria { get; set; }
+        [Key]
+        [Column("id")]
+        public int Id { get; set; }
+
+        [Column("titulo")]
+        public string Titulo { get; set; }
+
+        public virtual ApuntesCategoria ApuntesCategoria { get; set; }
 
         [ForeignKey("apuntes_categoria")]
         [Column("categoria_id")]
-        public int apuntesCategoriaId { get; set; }
+        public int ApuntesCategoriaId { get; set; }
 
-        [Key]
-        [Column("id")]
-        public int id { get; set; }
-
-        [Column("titulo")]
-        public string titulo { get; set; }
-
-        public virtual List<ApuntesDetalleTema> listaApuntesDetalleTema { get; set; } = new List<ApuntesDetalleTema>();
+        public virtual List<ApuntesDetalleTema> ListaApuntesDetalleTema { get; set; } = new List<ApuntesDetalleTema>();
 
     }
 

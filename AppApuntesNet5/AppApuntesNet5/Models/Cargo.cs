@@ -9,23 +9,23 @@ namespace AppApuntesNet5.Models
     [Table("cargo")]
     public class Cargo
     {
-        [Column("visible")]
-        public bool visible { get; set; }
-
-        [Column("activo")]
-        public bool activo { get; set; }
-
         [Key]
         [Column("id")]
-        public int id { get; set; }
+        public int Id { get; set; }
+
+        [Column("visible")]
+        public bool Visible { get; set; }
+
+        [Column("activo")]
+        public bool Activo { get; set; }
 
         [Column("descripcion")]
-        public string descripcion { get; set; }
+        public string Descripcion { get; set; }
 
         [Column("authority")]
-        public string authority { get; set; }
+        public string Authority { get; set; }
 
-        public virtual List<UsuarioCargo> listaUsuarioCargo { get; set; } = new List<UsuarioCargo>();
+        public virtual List<UsuarioCargo> ListaUsuarioCargo { get; set; } = new List<UsuarioCargo>();
 
     }
 

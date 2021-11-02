@@ -10,19 +10,19 @@ namespace AppApuntesNet5.Models
     {
         [Key]
         [Column("id")]
-        public int id { get; set; }
+        public int Id { get; set; }
 
-        public virtual Cargo cargo { get; set; }
+        public virtual Cargo Cargo { get; set; }
 
         [ForeignKey("cargo")]
         [Column("cargo_id")]
-        public int cargoId { get; set; }
+        public int CargoId { get; set; }
 
-        public virtual Usuario usuario { get; set; }
+        public virtual Usuario Usuario { get; set; }
 
         [ForeignKey("usuario")]
         [Column("usuario_id")]
-        public int usuarioId { get; set; }
+        public int UsuarioId { get; set; }
 
     }
 

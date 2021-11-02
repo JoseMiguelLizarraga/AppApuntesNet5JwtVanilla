@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using AppApuntesNet5.Services;
 using System.Threading.Tasks;
 using AppApuntesNet5.Dto;
+using System.Linq;
+using AppApuntesNet5.Mappings;
 
 namespace AppApuntesNet5.Controllers
 {
@@ -16,55 +18,57 @@ namespace AppApuntesNet5.Controllers
     [ApiController]
     public class ApuntesDetalleTemaController : ControllerBase
     {
-        private readonly IDetalleTemaService _detalleTemaService;
+        private readonly IDetalleTemaService _servicio;
 
-        public ApuntesDetalleTemaController(IDetalleTemaService detalleTemaService)
+        public ApuntesDetalleTemaController(IDetalleTemaService servicio)
         {
-            _detalleTemaService = detalleTemaService;
+            _servicio = servicio;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ApuntesDetalleTema>>> Get()
+        public async Task<ActionResult<List<ApuntesDetalleTemaDTO>>> Get()
         {
-            return await _detalleTemaService.Listar();
+            List<ApuntesDetalleTema> lista = await _servicio.Listar();
+            return lista.Select(Mapper.ToDTO).ToList();
         }
 
         [HttpPost]
         [Route("llenarDataTable")]
         public async Task<ActionResult<DataTableDTO>> LlenarDataTable([FromQuery] ApuntesDetalleTema apuntesDetalleTema, int start, int length)
         {
-            return await _detalleTemaService.LlenarDataTableApuntesDetalleTema(apuntesDetalleTema, start, length);
+            return await _servicio.LlenarDataTableApuntesDetalleTema(apuntesDetalleTema, start, length);
         }
 
         [HttpGet]
         [Route("{id:int}")]
-        public async Task<ActionResult<ApuntesDetalleTema>> BuscarPorId(int id)
+        public async Task<ActionResult<ApuntesDetalleTemaDTO>> BuscarPorId(int id)
         {
-            return await _detalleTemaService.BuscarPorId(id);
+            ApuntesDetalleTema apuntesDetalleTema = await _servicio.BuscarPorId(id);
+            return apuntesDetalleTema.ToDTO();
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApuntesDetalleTema>> Post(ApuntesDetalleTema apuntesDetalleTema)
+        public async Task<ActionResult<ApuntesDetalleTemaDTO>> Post(ApuntesDetalleTema apuntesDetalleTema)
         {
-            (ApuntesDetalleTema, string) result = await _detalleTemaService.Guardar(apuntesDetalleTema);
+            (ApuntesDetalleTema, string) result = await _servicio.Guardar(apuntesDetalleTema);
 
             if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
-            return Ok(result.Item1);
+            return Ok(result.Item1.ToDTO());
         }
 
         [HttpPut]
-        public async Task<ActionResult<ApuntesDetalleTema>> Put(ApuntesDetalleTema apuntesDetalleTema)
+        public async Task<ActionResult<ApuntesDetalleTemaDTO>> Put(ApuntesDetalleTema apuntesDetalleTema)
         {
-            (ApuntesDetalleTema, string) result = await _detalleTemaService.Actualizar(apuntesDetalleTema);
+            (ApuntesDetalleTema, string) result = await _servicio.Actualizar(apuntesDetalleTema);
 
             if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
-            return Ok(result.Item1);
+            return Ok(result.Item1.ToDTO());
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            (bool, string) result = await _detalleTemaService.Eliminar(id);
+            (bool, string) result = await _servicio.Eliminar(id);
 
             if (!result.Item1) return BadRequest(result.Item2);
             return Ok();
