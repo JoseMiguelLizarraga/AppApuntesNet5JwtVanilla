@@ -22,9 +22,15 @@ export class ApuntesDetalleTema extends CargaVista
         for (var prop in this) { window[prop] = this[prop]; }                                          // Coloca los atributos de la clase para que esten disponibles desde el html
         Object.getOwnPropertyNames(this.constructor.prototype).forEach(c=> { window[c] = this[c]; });  // Coloca los metodos de la clase para que esten disponibles desde el html
 
-        this.obtenerListaPrincipal();
-        this.cargarVista();
+        this.onInit();
     }
+
+    onInit()
+	{
+		this.cargarVista().then(() => {
+			this.obtenerListaPrincipal();
+		});
+	}
 
     destructor() {
         for (var prop in this) { delete window[prop]; }                                             // Remueve los atributos de la clase para que no queden en la ventana
@@ -409,14 +415,17 @@ export class ApuntesDetalleTema extends CargaVista
 
     cargarVista()
     {
-        this.cargarHtml({ 
-            rutaArchivo: "apuntesDetalleTema/index.html",
-            onload: () => {
-                this.cargarBuscadores();
-            }
-        }); 
+		return new Promise((resolve) => {
 
-        //this.cargarHtml({textoHtml: "aaaaaaaaaaaa"});
+			this.cargarHtml({ 
+                rutaArchivo: "apuntesDetalleTema/index.html",
+                onload: () => {
+                    this.cargarBuscadores();
+                }
+			}); 
+
+			document.addEventListener('DOMContentLoaded', resolve);
+		});
     }
     
 };

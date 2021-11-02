@@ -65,7 +65,8 @@ import {rutasProyecto} from './configuraciones/rutasProyecto.js';
 
         if (rutaEncontrada != null) 
         {
-            inicializarComponente(rutaEncontrada);
+            // inicializarComponente(rutaEncontrada);      // Asi carga el componente sin necesidad de refrescar la pagina
+            return window.location.reload();         // Recarga la pagina. Se usa en caso de que existan problemas con la carga del componente
         }
     }
 

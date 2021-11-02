@@ -11,29 +11,7 @@ namespace AppApuntesNet5.Mappings
 
             ApuntesCategoriaDTO dto = new ApuntesCategoriaDTO()
             {
-                Titulo = model.Titulo,
-                Id = model.Id
-            };
-
-            foreach (ApuntesTema c in model.ListaApuntesTema)
-            {
-                c.ApuntesCategoria = null;  // Impedir loop infinito 
-                dto.ListaApuntesTema.Add(c.ToDTO());
-            }
-
-            return dto;
-        }
-
-        public static ApuntesDetalleTemaDTO ToDTO(this Models.ApuntesDetalleTema model)
-        {
-            if (model == null) return null;
-
-            ApuntesDetalleTemaDTO dto = new ApuntesDetalleTemaDTO()
-            {
                 Id = model.Id,
-                Contenido = model.Contenido,
-                RutaFoto = model.RutaFoto,
-                ApuntesTema = model.ApuntesTema?.ToDTO(),
                 Titulo = model.Titulo
             };
 
@@ -46,9 +24,9 @@ namespace AppApuntesNet5.Mappings
 
             ApuntesTemaDTO dto = new ApuntesTemaDTO()
             {
-                ApuntesCategoria = model.ApuntesCategoria?.ToDTO(),
                 Id = model.Id,
-                Titulo = model.Titulo
+                Titulo = model.Titulo,
+                ApuntesCategoria = model.ApuntesCategoria?.ToDTO()
             };
 
             foreach (ApuntesDetalleTema c in model.ListaApuntesDetalleTema)
@@ -58,6 +36,20 @@ namespace AppApuntesNet5.Mappings
             }
 
             return dto;
+        }
+
+        public static ApuntesDetalleTemaDTO ToDTO(this Models.ApuntesDetalleTema model)
+        {
+            if (model == null) return null;
+
+            return new ApuntesDetalleTemaDTO()
+            {
+                Id = model.Id,
+                Contenido = model.Contenido,
+                RutaFoto = model.RutaFoto,
+                ApuntesTema = model.ApuntesTema?.ToDTO(),
+                Titulo = model.Titulo
+            };
         }
     }
 }

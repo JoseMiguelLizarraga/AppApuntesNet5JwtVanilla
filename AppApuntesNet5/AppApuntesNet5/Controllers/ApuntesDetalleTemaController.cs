@@ -34,9 +34,9 @@ namespace AppApuntesNet5.Controllers
 
         [HttpPost]
         [Route("llenarDataTable")]
-        public async Task<ActionResult<DataTableDTO>> LlenarDataTable([FromQuery] ApuntesDetalleTema apuntesDetalleTema, int start, int length)
+        public async Task<ActionResult<DataTableDTO>> LlenarDataTable([FromQuery] ApuntesDetalleTemaDTO dto, int start, int length)
         {
-            return await _servicio.LlenarDataTableApuntesDetalleTema(apuntesDetalleTema, start, length);
+            return await _servicio.LlenarDataTableApuntesDetalleTema(dto.ToDatabaseObject(), start, length);
         }
 
         [HttpGet]
@@ -48,18 +48,18 @@ namespace AppApuntesNet5.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApuntesDetalleTemaDTO>> Post(ApuntesDetalleTema apuntesDetalleTema)
+        public async Task<ActionResult<ApuntesDetalleTemaDTO>> Post(ApuntesDetalleTemaDTO dto)
         {
-            (ApuntesDetalleTema, string) result = await _servicio.Guardar(apuntesDetalleTema);
+            (ApuntesDetalleTema, string) result = await _servicio.Guardar(dto.ToDatabaseObject());
 
             if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
             return Ok(result.Item1.ToDTO());
         }
 
         [HttpPut]
-        public async Task<ActionResult<ApuntesDetalleTemaDTO>> Put(ApuntesDetalleTema apuntesDetalleTema)
+        public async Task<ActionResult<ApuntesDetalleTemaDTO>> Put(ApuntesDetalleTemaDTO dto)
         {
-            (ApuntesDetalleTema, string) result = await _servicio.Actualizar(apuntesDetalleTema);
+            (ApuntesDetalleTema, string) result = await _servicio.Actualizar(dto.ToDatabaseObject());
 
             if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
             return Ok(result.Item1.ToDTO());

@@ -52,12 +52,13 @@ export class CargaVista
                 });
             }))
             .then(results => {
-                if (results.every(res => res)) {
-                    //console.log("all images loaded successfully");
+                if (results.every(res => res)) 
+                {
+                    //console.log("Todas las imagenes han sido cargadas");
                     ocultarLoadingSpinner();
                 }
                 else {
-                    //console.log("some images failed to load, all finished loading");
+                    //console.log("Algunas imagenes fallaron al cargar. Termino el proceso de carga");
                 }
             });
         }
