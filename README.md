@@ -12,7 +12,7 @@ Permite que cada usuario que ha iniciado sesión pueda registrar sus apuntes y r
 Javascript sin frameworks (Vanilla js)
 
 ## Instrucciones
-Importar a MySQL el archivo app_apuntes_net5.sql ubicado en la carpeta raiz. Colocar la carpeta docs dentro de un servidor web (Apache, UsbWebServer, Xampp, etc).
+Importar a MySQL el archivo app_apuntes_net5.sql ubicado en la carpeta raiz. Colocar el contenido de la carpeta Js dentro de un servidor web (Apache, UsbWebServer, Xampp, etc).
 
 <br />
 
