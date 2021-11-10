@@ -152,3 +152,5 @@ C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\AppApuntesNet5\bin\Debug\net5.0\Mappings.pdb
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\AppApuntesNet5\bin\Debug\net5.0\Services.dll
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\AppApuntesNet5\bin\Debug\net5.0\Services.pdb
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\AppApuntesNet5\bin\Debug\net5.0\Util.dll
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\AppApuntesNet5\bin\Debug\net5.0\Util.pdb

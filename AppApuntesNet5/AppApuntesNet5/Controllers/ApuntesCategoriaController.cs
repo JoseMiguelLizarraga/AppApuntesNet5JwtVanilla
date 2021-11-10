@@ -10,6 +10,7 @@ using DataAccess.Models;
 using Mappings;
 using Services;
 using Newtonsoft.Json;
+using Util;
 
 namespace AppApuntesNet5.Controllers
 {
@@ -39,54 +40,70 @@ namespace AppApuntesNet5.Controllers
         [Route("llenarSelect2")]
         public ActionResult<Select2DTO> LlenarSelect2(string busqueda, int registrosPorPagina, int numeroPagina)
         {
-            Select2DTO retorno = _servicio.LlenarSelect2(busqueda, registrosPorPagina, numeroPagina);
-            return retorno;
+            return _servicio.LlenarSelect2(busqueda, registrosPorPagina, numeroPagina);
         }
 
         [HttpGet]
         [Route("{id:int}")]
         public ActionResult<ApuntesCategoriaDTO> BuscarPorId(int id)
         {
-            ApuntesCategorium apuntesCategoria = _servicio.BuscarPorId(id);
-            return apuntesCategoria.ToDTO();
+            return _servicio.BuscarPorId(id).ToDTO();
         }
 
         [HttpPost]
         public async Task<ActionResult<ApuntesCategoriaDTO>> Post(ApuntesCategoriaDTO dto)
         {
-            (ApuntesCategorium, string) result = await _servicio.Guardar(dto.ToDatabaseObject());
+            (ApuntesCategorium, ExcepcionCapturada) result = await _servicio.Guardar(dto.ToDatabaseObject());
 
-            if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
-            return Ok(result.Item1.ToDTO());
+            if (result.Item1 != null)
+                return Ok(result.Item1.ToDTO());
+
+            else if (result.Item2.Status == 400)
+                return BadRequest(result.Item2.MensajeError);
+
+            else
+                return StatusCode(500, $"Se encontró un error: {result.Item2.MensajeError}");
         }
 
         [HttpPut]
         public async Task<ActionResult<ApuntesCategoriaDTO>> Put(ApuntesCategoriaDTO dto)
         {
-            (ApuntesCategorium, string) result = await _servicio.Actualizar(dto.ToDatabaseObject());
+            (ApuntesCategorium, ExcepcionCapturada) result = await _servicio.Actualizar(dto.ToDatabaseObject());
 
-            if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
-            return Ok(result.Item1.ToDTO());
+            if (result.Item1 != null)
+                return Ok(result.Item1.ToDTO());
+
+            else if (result.Item2.Status == 400)
+                return BadRequest(result.Item2.MensajeError);
+
+            else
+                return StatusCode(500, $"Se encontró un error: {result.Item2.MensajeError}");
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            (bool, string) result = await _servicio.Eliminar(id);
+            (bool, ExcepcionCapturada) result = await _servicio.Eliminar(id);
 
-            if (!result.Item1) return BadRequest(result.Item2);
-            return Ok();
+            if (result.Item1)
+                return Ok();
+            else
+                return StatusCode(500, $"Se encontró un error: {result.Item2.MensajeError}");
         }
 
         [HttpPost("agregarLogo")]
         public async Task<ActionResult<ApuntesCategoriaDTO>> AgregarLogo(ApuntesCategoriaDTO dto)
         {
-            (ApuntesCategorium, string) result = await _servicio.GuardarLogo(dto.ToDatabaseObject());
+            (ApuntesCategorium, ExcepcionCapturada) result = await _servicio.GuardarLogo(dto.ToDatabaseObject());
 
-            if (string.IsNullOrEmpty(result.Item2))
+            if (result.Item1 != null)
                 return Ok(result.Item1.ToDTO());
+
+            else if (result.Item2.Status == 400)
+                return BadRequest(result.Item2.MensajeError);
+
             else
-                return StatusCode(500, result.Item2);
+                return StatusCode(500, $"Se encontró un error: {result.Item2.MensajeError}");
         }
     }
 }

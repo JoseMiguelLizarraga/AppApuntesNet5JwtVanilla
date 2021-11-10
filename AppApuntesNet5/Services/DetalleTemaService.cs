@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataAccess.Models;
 using Mappings;
+using Util;
 
 namespace Services
 {
@@ -67,10 +68,10 @@ namespace Services
             };
         }
 
-        public async Task<(ApuntesDetalleTema, string)> Guardar(ApuntesDetalleTema objeto)
+        public async Task<(ApuntesDetalleTema, ExcepcionCapturada)> Guardar(ApuntesDetalleTema objeto)
         {
             if (!ValidarApuntesDetalleTema(objeto, out string error))
-                return (null, error);
+                return (null, ExcepcionesHelper.GenerarExcepcion(error, 400));
 
             using (var dbContextTransaction = db.Database.BeginTransaction())
             {
@@ -88,24 +89,30 @@ namespace Services
 
                     await db.SaveChangesAsync();
                     await dbContextTransaction.CommitAsync();
-                    return (model, "");
+                    return (model, null);
 
                 }
                 catch (Exception ex)
                 {
                     dbContextTransaction.Rollback();
 
-                    return (null, ex.InnerException != null && ex.InnerException.InnerException != null ?
-                        ex.InnerException.InnerException.Message :
-                        ex.Message);
+                    ExcepcionCapturada excepcion = ExcepcionesHelper.ObtenerExcepcion(ex);
+
+                    if (excepcion.MensajeError.Contains("duplicate key"))
+                    {
+                        excepcion.MensajeError = "El título del detalle de tema debe ser único e irrepetible";
+                        excepcion.Status = 400;
+                    }
+
+                    return (null, excepcion);
                 }
             }
         }
 
-        public async Task<(ApuntesDetalleTema, string)> Actualizar(ApuntesDetalleTema objeto)
+        public async Task<(ApuntesDetalleTema, ExcepcionCapturada)> Actualizar(ApuntesDetalleTema objeto)
         {
             if (!ValidarApuntesDetalleTema(objeto, out string error))
-                return (null, error);
+                return (null, ExcepcionesHelper.GenerarExcepcion(error, 400));
 
             using (var dbContextTransaction = db.Database.BeginTransaction())
             {
@@ -122,15 +129,21 @@ namespace Services
 
                     await db.SaveChangesAsync();
                     await dbContextTransaction.CommitAsync();
-                    return (model, "");
+                    return (model, null);
                 }
                 catch (Exception ex)
                 {
-                    dbContextTransaction.Rollback();   // No se realizan los cambios 
+                    dbContextTransaction.Rollback();
 
-                    return (null, ex.InnerException != null && ex.InnerException.InnerException != null ?
-                        ex.InnerException.InnerException.Message :
-                        ex.Message);
+                    ExcepcionCapturada excepcion = ExcepcionesHelper.ObtenerExcepcion(ex);
+
+                    if (excepcion.MensajeError.Contains("duplicate key"))
+                    {
+                        excepcion.MensajeError = "El título del detalle de tema debe ser único e irrepetible";
+                        excepcion.Status = 400;
+                    }
+
+                    return (null, excepcion);
                 }
             }
         }

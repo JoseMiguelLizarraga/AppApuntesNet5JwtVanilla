@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataAccess.Models;
 using Mappings;
+using Util;
 
 namespace Services
 {
@@ -67,7 +68,7 @@ namespace Services
             return Lista.FirstOrDefault(x => x.Id == id);
         }
 
-        public async Task<(ApuntesCategorium, string)> GuardarLogo(ApuntesCategorium objeto)
+        public async Task<(ApuntesCategorium, ExcepcionCapturada)> GuardarLogo(ApuntesCategorium objeto)
         {
             try
             {
@@ -85,24 +86,19 @@ namespace Services
                     elementoLista.Logo = objeto.Logo;
                     elementoLista.TipoLogo = objeto.TipoLogo;
 
-                    return (categoria, "");
+                    return (categoria, null);
                 }
             }
             catch (Exception ex)
             {
-                var error = ex.InnerException != null && ex.InnerException.InnerException != null ?
-                    ex.InnerException.InnerException.Message :  // Lanza errores SQL 
-                    ex.Message;
-
-                return (null, error);
+                return (null, ExcepcionesHelper.ObtenerExcepcion(ex));
             }
-
         }
 
-        public async Task<(ApuntesCategorium, string)> Guardar(ApuntesCategorium objeto)
+        public async Task<(ApuntesCategorium, ExcepcionCapturada)> Guardar(ApuntesCategorium objeto)
         {
             if (!ValidarApuntesCategoria(objeto, out string error))
-                return (null, error);
+                return (null, ExcepcionesHelper.GenerarExcepcion(error, 400));
 
             using (var scope = scopeFactory.CreateScope())
             {
@@ -122,27 +118,31 @@ namespace Services
 
                         Lista.Add(apuntesCategoria);   // Se agrega a la lista unica
 
-                        return (apuntesCategoria, "");
+                        return (apuntesCategoria, null);
                     }
                     catch (Exception ex)
                     {
                         dbContextTransaction.Rollback();
 
-                        error = ex.InnerException != null && ex.InnerException.InnerException != null ?
-                            ex.InnerException.InnerException.Message :  // Lanza errores SQL 
-                            ex.Message;
+                        ExcepcionCapturada excepcion = ExcepcionesHelper.ObtenerExcepcion(ex);
 
-                        return (null, error);
+                        if (excepcion.MensajeError.Contains("duplicate key")) 
+                        {
+                            excepcion.MensajeError = "El título de la categoría debe ser único e irrepetible";
+                            excepcion.Status = 400;
+                        }   
+
+                        return (null, excepcion);
                     }
                 }
             }
         }
 
 
-        public async Task<(ApuntesCategorium, string)> Actualizar(ApuntesCategorium apuntesCategoria)
+        public async Task<(ApuntesCategorium, ExcepcionCapturada)> Actualizar(ApuntesCategorium apuntesCategoria)
         {
             if (!ValidarApuntesCategoria(apuntesCategoria, out string error))
-                return (null, error);
+                return (null, ExcepcionesHelper.GenerarExcepcion(error, 400));
 
             using (var scope = scopeFactory.CreateScope())
             {
@@ -164,26 +164,28 @@ namespace Services
                         ApuntesCategorium elementoLista = Lista.Where(x => x.Id == objeto.Id).FirstOrDefault();
                         elementoLista.Titulo = objeto.Titulo;
 
-                        return (apuntesCategoria, "");
+                        return (apuntesCategoria, null);
                     }
                     catch (Exception ex)
                     {
                         dbContextTransaction.Rollback();   // No se realizan los cambios 
 
-                        error = ex.InnerException != null && ex.InnerException.InnerException != null ?
-                            ex.InnerException.InnerException.Message :  // Lanza errores SQL 
-                            ex.Message;
+                        ExcepcionCapturada excepcion = ExcepcionesHelper.ObtenerExcepcion(ex);
 
-                        return (null, error);
+                        if (excepcion.MensajeError.Contains("duplicate key"))
+                        {
+                            excepcion.MensajeError = "El título de la categoría debe ser único e irrepetible";
+                            excepcion.Status = 400;
+                        }
+
+                        return (null, excepcion);
                     }
                 }
             }
         }
 
-        public async Task<(bool, string)> Eliminar(int id)
+        public async Task<(bool, ExcepcionCapturada)> Eliminar(int id)
         {
-            string mensajeError = "";
-
             using (var scope = scopeFactory.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<AppApuntesNet5Context>();  // Esto es para acceder al ApplicationDbContext desde singleton
@@ -205,16 +207,18 @@ namespace Services
                         // Remueve de la lista unica
                         ApuntesCategorium elemento = Lista.Single(x => x.Id == apuntesCategoria.Id);
                         Lista.Remove(elemento);
+
+                        return (true, null);
                     }
                     catch (Exception ex)
                     {
                         dbContextTransaction.Rollback();   // No se realizan los cambios 
-                        mensajeError = ex.Message;
+
+                        ExcepcionCapturada excepcion = ExcepcionesHelper.ObtenerExcepcion(ex);
+                        return (false, excepcion);
                     }
                 }
             }
-
-            return (string.IsNullOrEmpty(mensajeError), mensajeError);
         }
 
 

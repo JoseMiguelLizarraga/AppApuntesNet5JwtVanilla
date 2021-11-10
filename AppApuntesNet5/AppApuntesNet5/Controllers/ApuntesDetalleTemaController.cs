@@ -9,6 +9,7 @@ using System.Linq;
 using DataAccess.Models;
 using Mappings;
 using Services;
+using Util;
 
 namespace AppApuntesNet5.Controllers
 {
@@ -49,19 +50,31 @@ namespace AppApuntesNet5.Controllers
         [HttpPost]
         public async Task<ActionResult<ApuntesDetalleTemaDTO>> Post(ApuntesDetalleTemaDTO dto)
         {
-            (ApuntesDetalleTema, string) result = await _servicio.Guardar(dto.ToDatabaseObject());
+            (ApuntesDetalleTema, ExcepcionCapturada) result = await _servicio.Guardar(dto.ToDatabaseObject());
 
-            if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
-            return Ok(result.Item1.ToDTO());
+            if (result.Item1 != null)
+                return Ok(result.Item1.ToDTO());
+
+            else if (result.Item2.Status == 400)
+                return BadRequest(result.Item2.MensajeError);
+
+            else
+                return StatusCode(500, $"Se encontró un error: {result.Item2.MensajeError}");
         }
 
         [HttpPut]
         public async Task<ActionResult<ApuntesDetalleTemaDTO>> Put(ApuntesDetalleTemaDTO dto)
         {
-            (ApuntesDetalleTema, string) result = await _servicio.Actualizar(dto.ToDatabaseObject());
+            (ApuntesDetalleTema, ExcepcionCapturada) result = await _servicio.Actualizar(dto.ToDatabaseObject());
 
-            if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
-            return Ok(result.Item1.ToDTO());
+            if (result.Item1 != null)
+                return Ok(result.Item1.ToDTO());
+
+            else if (result.Item2.Status == 400)
+                return BadRequest(result.Item2.MensajeError);
+
+            else
+                return StatusCode(500, $"Se encontró un error: {result.Item2.MensajeError}");
         }
 
         [HttpDelete("{id}")]
@@ -69,8 +82,10 @@ namespace AppApuntesNet5.Controllers
         {
             (bool, string) result = await _servicio.Eliminar(id);
 
-            if (!result.Item1) return BadRequest(result.Item2);
-            return Ok();
+            if (result.Item1)
+                return Ok();
+            else
+                return StatusCode(500, $"Se encontró un error: {result.Item2}");
         }
     }
 }

@@ -1667,13 +1667,24 @@
         "framework": ".NETCoreApp,Version=v5.0",
         "dependencies": {
           "DataAccess": "1.0.0",
-          "Mappings": "1.0.0"
+          "Mappings": "1.0.0",
+          "Util": "1.0.0"
         },
         "compile": {
           "bin/placeholder/Services.dll": {}
         },
         "runtime": {
           "bin/placeholder/Services.dll": {}
+        }
+      },
+      "Util/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v5.0",
+        "compile": {
+          "bin/placeholder/Util.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Util.dll": {}
         }
       }
     }
@@ -5938,6 +5949,11 @@
       "type": "project",
       "path": "../Services/Services.csproj",
       "msbuildProject": "../Services/Services.csproj"
+    },
+    "Util/1.0.0": {
+      "type": "project",
+      "path": "../Util/Util.csproj",
+      "msbuildProject": "../Util/Util.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -5952,7 +5968,8 @@
       "Microsoft.EntityFrameworkCore.Tools >= 5.0.2",
       "Pomelo.EntityFrameworkCore.MySql >= 5.0.0-alpha.2",
       "Services >= 1.0.0",
-      "Swashbuckle.AspNetCore >= 5.6.3"
+      "Swashbuckle.AspNetCore >= 5.6.3",
+      "Util >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -5998,6 +6015,9 @@
             },
             "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5JwtVanilla\\AppApuntesNet5\\Services\\Services.csproj": {
               "projectPath": "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5JwtVanilla\\AppApuntesNet5\\Services\\Services.csproj"
+            },
+            "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5JwtVanilla\\AppApuntesNet5\\Util\\Util.csproj": {
+              "projectPath": "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5JwtVanilla\\AppApuntesNet5\\Util\\Util.csproj"
             }
           }
         }

@@ -1570,6 +1570,16 @@
         "runtime": {
           "bin/placeholder/Mappings.dll": {}
         }
+      },
+      "Util/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v5.0",
+        "compile": {
+          "bin/placeholder/Util.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Util.dll": {}
+        }
       }
     }
   },
@@ -5885,12 +5895,18 @@
       "type": "project",
       "path": "../Mappings/Mappings.csproj",
       "msbuildProject": "../Mappings/Mappings.csproj"
+    },
+    "Util/1.0.0": {
+      "type": "project",
+      "path": "../Util/Util.csproj",
+      "msbuildProject": "../Util/Util.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net5.0": [
       "DataAccess >= 1.0.0",
-      "Mappings >= 1.0.0"
+      "Mappings >= 1.0.0",
+      "Util >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -5933,6 +5949,9 @@
             },
             "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5JwtVanilla\\AppApuntesNet5\\Mappings\\Mappings.csproj": {
               "projectPath": "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5JwtVanilla\\AppApuntesNet5\\Mappings\\Mappings.csproj"
+            },
+            "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5JwtVanilla\\AppApuntesNet5\\Util\\Util.csproj": {
+              "projectPath": "C:\\Users\\josel\\Documents\\Aprendiendo .NET\\AppApuntesNet5JwtVanilla\\AppApuntesNet5\\Util\\Util.csproj"
             }
           }
         }
