@@ -1,0 +1,32 @@
+
+Crear un proyecto de tipo
+	Aplicacion web ASP.NET Core(Model-Vista-Controlador)
+	
+Nombre solucion:	AppApuntesNet5
+	Nombre proyecto: 	AppApuntesNet5
+	Autenticacion:		Ninguno
+	Version:			net5
+	
+	
+Crear esta biblioteca de clases dentro de la solucion (Con net5):	
+	DataAccess
+	
+		Instalar E.F. Core:
+			Microsoft.EntityFrameworkCore.SqlServer		Version 5.0.6
+			Microsoft.EntityFrameworkCore.Tools			Version 5.0.6			
+			
+En WebApp instalar		
+	Microsoft.EntityFrameworkCore.Design	Version 5.0.6
+	Agregar referencia al proyecto DataAccess			
+			
+			
+Ir arriba a tools.....nugget package manager .... package manager console  .... En proyecto predeterminado seleccionar La biblioteca de clases que creaste (DataAccess)
+
+	Scaffold-DbContext "Server=.\SQLExpress;Database=AppApuntesNet5;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+	
+Abrir en el navegador
+
+	https://localhost:44305/
+		
+
+

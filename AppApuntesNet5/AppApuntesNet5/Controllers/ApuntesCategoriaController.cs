@@ -2,19 +2,18 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using AppApuntesNet5.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using AppApuntesNet5.Services;
-using AppApuntesNet5.Dto;
 using System.Threading.Tasks;
 using System.Linq;
-using AppApuntesNet5.Mappings;
+using DataAccess.Models;
+using Mappings;
+using Services;
 
 namespace AppApuntesNet5.Controllers
 {
-    [Route("ApuntesCategoria")]
     [ApiController]
+    [Route("ApuntesCategoria")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ApuntesCategoriaController : ControllerBase
     {
@@ -31,6 +30,7 @@ namespace AppApuntesNet5.Controllers
         [Route("llenarDataTable")]
         public IActionResult llenarDataTable([FromQuery] ApuntesCategoriaDTO dto, int start, int length)
         {
+            //ApuntesCategorium apuntesCategoria = dto.ToDatabaseObject();
             DataTableDTO respuesta = _servicio.LlenarDataTableApuntesCategoria(dto.ToDatabaseObject(), start, length);
             return Ok(respuesta);
         }
@@ -47,14 +47,14 @@ namespace AppApuntesNet5.Controllers
         [Route("{id:int}")]
         public ActionResult<ApuntesCategoriaDTO> BuscarPorId(int id)
         {
-            ApuntesCategoria apuntesCategoria = _servicio.BuscarPorId(id);
+            ApuntesCategorium apuntesCategoria = _servicio.BuscarPorId(id);
             return apuntesCategoria.ToDTO();
         }
 
         [HttpPost]
         public async Task<ActionResult<ApuntesCategoriaDTO>> Post(ApuntesCategoriaDTO dto)
         {
-            (ApuntesCategoria, string) result = await _servicio.Guardar(dto.ToDatabaseObject());
+            (ApuntesCategorium, string) result = await _servicio.Guardar(dto.ToDatabaseObject());
 
             if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
             return Ok(result.Item1.ToDTO());
@@ -63,7 +63,7 @@ namespace AppApuntesNet5.Controllers
         [HttpPut]
         public async Task<ActionResult<ApuntesCategoriaDTO>> Put(ApuntesCategoriaDTO dto)
         {
-            (ApuntesCategoria, string) result = await _servicio.Actualizar(dto.ToDatabaseObject());
+            (ApuntesCategorium, string) result = await _servicio.Actualizar(dto.ToDatabaseObject());
 
             if (!string.IsNullOrEmpty(result.Item2)) return BadRequest(result.Item2);
             return Ok(result.Item1.ToDTO());

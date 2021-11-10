@@ -5,14 +5,14 @@ Permite que cada usuario que ha iniciado sesión pueda registrar sus apuntes y r
 
 ## Tecnologías Backend
 
-.NET 5(NET Core 5), Mysql y Json Web Token
+.NET 5(NET Core 5), SQL Server y Json Web Token
 
 ## Tecnologías frontend
 
 Javascript sin frameworks (Vanilla js)
 
 ## Instrucciones
-Importar a MySQL el archivo app_apuntes_net5.sql ubicado en la carpeta raiz. Colocar el contenido de la carpeta Js dentro de un servidor web (Apache, UsbWebServer, Xampp, etc).
+Colocar el contenido de la carpeta Js dentro de un servidor web (Apache, UsbWebServer, Xampp, etc).
 
 <br />
 

@@ -1,6 +1,3 @@
-using AppApuntesNet5.Dto;
-using AppApuntesNet5.Models;
-using AppApuntesNet5.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,7 +11,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
-
+using DataAccess.Models;
+using DataAccess;
+using Services;
 
 namespace AppApuntesNet5
 {
@@ -31,15 +30,15 @@ namespace AppApuntesNet5
         public void ConfigureServices(IServiceCollection services)
         {
             // SQL Server
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"))
-            //);
+            services.AddDbContext<AppApuntesNet5Context>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"))
+            );
 
             // MySQL
-            string mySqlConnectionStr = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContextPool<ApplicationDbContext>(options =>
-                options.UseMySql(mySqlConnectionStr, ServerVersion.AutoDetect(mySqlConnectionStr))
-            );
+            //string mySqlConnectionStr = Configuration.GetConnectionString("DefaultConnection");
+            //services.AddDbContextPool<ApplicationDbContext>(options =>
+            //    options.UseMySql(mySqlConnectionStr, ServerVersion.AutoDetect(mySqlConnectionStr))
+            //);
 
 
             services.AddSingleton<ICategoriaService, CategoriaService>();
@@ -50,7 +49,7 @@ namespace AppApuntesNet5
             // La clase ApplicationUser del modelo representa a un usuario en la base de datos
 
             services.AddIdentity<UsuarioAutenticado, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddEntityFrameworkStores<AppApuntesNet5Context>()
                 .AddDefaultTokenProviders();
 
             // Configurar servicio de autenticacion con tokens

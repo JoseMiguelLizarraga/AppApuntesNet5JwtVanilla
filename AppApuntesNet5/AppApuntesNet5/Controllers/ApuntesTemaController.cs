@@ -1,19 +1,18 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
-using AppApuntesNet5.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using AppApuntesNet5.Services;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using AppApuntesNet5.Dto;
 using System.Linq;
-using AppApuntesNet5.Mappings;
+using DataAccess.Models;
+using Mappings;
+using Services;
 
 namespace AppApuntesNet5.Controllers
 {
-    [Route("ApuntesTema")]
     [ApiController]
+    [Route("ApuntesTema")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ApuntesTemaController : ControllerBase
     {

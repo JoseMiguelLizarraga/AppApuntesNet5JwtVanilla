@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +7,8 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
-using AppApuntesNet5.Dto;
+using DataAccess;
+using Mappings;
 
 namespace WebApiPaises.Controllers
 {
@@ -113,4 +113,49 @@ namespace WebApiPaises.Controllers
         }
     }
 }
+
+// Ejemplos con Api Fetch
+/*
+fetch("https://localhost:44322/Account/Create", {
+	method: "POST",
+	headers: {"Accept": "application/json", "Content-Type": "application/json"},
+	body: JSON.stringify({
+      "username": "ejemplo@gmail.com",
+      "password": "MyN3wP@ssw0rd"
+    })
+})
+.then(response => 
+{
+	if(response.ok) 
+	{
+		response.json().then(data => {
+			console.log(data);
+		});
+	} 
+	else {
+		response.text().then(textoError => alert(textoError));
+	}
+});
+//============================================================================>>>>>
+fetch("https://localhost:44322/login", {
+	method: "POST",
+	headers: {"Accept": "application/json", "Content-Type": "application/json"},
+	body: JSON.stringify({
+      "username": "ejemplo@gmail.com",
+      "password": "MyN3wP@ssw0rd"
+    })
+})
+.then(response => 
+{
+	if(response.ok) 
+	{
+		response.json().then(data => {
+			console.log(data);
+		});
+	} 
+	else {
+		response.text().then(textoError => alert(textoError));
+	}
+});
+*/
 

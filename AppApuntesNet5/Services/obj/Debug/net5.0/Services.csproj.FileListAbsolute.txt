@@ -1,0 +1,17 @@
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\bin\Debug\net5.0\Services.deps.json
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\bin\Debug\net5.0\Services.dll
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\bin\Debug\net5.0\ref\Services.dll
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\bin\Debug\net5.0\Services.pdb
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\bin\Debug\net5.0\DataAccess.dll
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\bin\Debug\net5.0\Mappings.dll
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\bin\Debug\net5.0\DataAccess.pdb
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\bin\Debug\net5.0\Mappings.pdb
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\obj\Debug\net5.0\Services.csprojAssemblyReference.cache
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\obj\Debug\net5.0\Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\obj\Debug\net5.0\Services.AssemblyInfoInputs.cache
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\obj\Debug\net5.0\Services.AssemblyInfo.cs
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\obj\Debug\net5.0\Services.csproj.CoreCompileInputs.cache
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\obj\Debug\net5.0\Services.csproj.CopyComplete
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\obj\Debug\net5.0\Services.dll
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\obj\Debug\net5.0\ref\Services.dll
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\obj\Debug\net5.0\Services.pdb
