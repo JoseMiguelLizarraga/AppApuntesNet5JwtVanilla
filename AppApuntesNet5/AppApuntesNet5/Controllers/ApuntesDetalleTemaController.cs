@@ -13,7 +13,7 @@ using Services;
 namespace AppApuntesNet5.Controllers
 {
     [ApiController]
-    [Route("ApuntesDetalleTema")]
+    [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ApuntesDetalleTemaController : ControllerBase
     {

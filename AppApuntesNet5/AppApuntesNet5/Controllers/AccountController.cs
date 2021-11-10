@@ -12,6 +12,8 @@ using Mappings;
 
 namespace WebApiPaises.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     [Produces("application/json")]
     public class AccountController : Controller
     {
@@ -30,7 +32,7 @@ namespace WebApiPaises.Controllers
         }
 
 
-        [Route("Account/Create")]
+        [Route("create")]
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] LoginDto model)
         {
@@ -116,7 +118,7 @@ namespace WebApiPaises.Controllers
 
 // Ejemplos con Api Fetch
 /*
-fetch("https://localhost:44322/Account/Create", {
+fetch("https://localhost:44322/api/account/create", {
 	method: "POST",
 	headers: {"Accept": "application/json", "Content-Type": "application/json"},
 	body: JSON.stringify({
@@ -137,7 +139,7 @@ fetch("https://localhost:44322/Account/Create", {
 	}
 });
 //============================================================================>>>>>
-fetch("https://localhost:44322/login", {
+fetch("https://localhost:44322/api/account/login", {
 	method: "POST",
 	headers: {"Accept": "application/json", "Content-Type": "application/json"},
 	body: JSON.stringify({

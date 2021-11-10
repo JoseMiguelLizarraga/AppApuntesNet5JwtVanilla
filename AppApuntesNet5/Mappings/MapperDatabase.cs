@@ -12,7 +12,9 @@ namespace Mappings
             ApuntesCategorium model = new ApuntesCategorium()
             {
                 Id = dto.Id,
-                Titulo = dto.Titulo
+                Titulo = dto.Titulo,
+                Logo = dto.Logo,
+                TipoLogo = dto.TipoLogo
             };
 
             return model;

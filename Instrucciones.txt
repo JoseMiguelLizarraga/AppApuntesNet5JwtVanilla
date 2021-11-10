@@ -20,13 +20,28 @@ En WebApp instalar
 	Agregar referencia al proyecto DataAccess			
 			
 			
-Ir arriba a tools.....nugget package manager .... package manager console  .... En proyecto predeterminado seleccionar La biblioteca de clases que creaste (DataAccess)
+Ir arriba a tools.....nugget package manager .... package manager console  .... En proyecto predeterminado, seleccionar La biblioteca de clases que creaste (DataAccess)
 
 	Scaffold-DbContext "Server=.\SQLExpress;Database=AppApuntesNet5;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
 	
-Abrir en el navegador
+Para renovar el modelo despues de un cambio en la base de datos, hay que hacer click derecho en el proyecto DataAccess -> Abrir en terminal	
 
+	dotnet ef dbcontext scaffold "Server=.\SQLExpress;Database=AppApuntesNet5;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -o Models --force
+		
+		Uso de autenticacion de usuario con Database First basado en:
+			https://gavilan.blog/2021/06/25/mounting-identity-with-database-first-asp-net-core/
+	
+Abrir en el navegador
 	https://localhost:44305/
+	
+	
+	
+
+
+
+
+
+	
 		
 
 

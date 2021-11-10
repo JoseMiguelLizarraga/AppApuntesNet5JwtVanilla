@@ -203,7 +203,6 @@ const selectBuscador = (datos) =>
 
 						if (optionInicialEncontrado != null && optionInicialEncontrado.value == "")   // Si existe un option inicial. Ej: opcion "todos"
 						{  
-							
 							//select.appendChild(optionInicial);          // Coloca el option inicial al comienzo
 							select.appendChild(optionInicialEncontrado);  // Coloca el option inicial al comienzo
 

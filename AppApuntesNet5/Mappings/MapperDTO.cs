@@ -12,7 +12,9 @@ namespace Mappings
             ApuntesCategoriaDTO dto = new ApuntesCategoriaDTO()
             {
                 Id = model.Id,
-                Titulo = model.Titulo
+                Titulo = model.Titulo,
+                Logo = model.Logo,
+                TipoLogo = model.TipoLogo
             };
 
             return dto;

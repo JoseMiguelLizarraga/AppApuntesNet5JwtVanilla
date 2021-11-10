@@ -21,9 +21,6 @@ namespace DataAccess.Models
         public virtual DbSet<ApuntesCategorium> ApuntesCategoria { get; set; }
         public virtual DbSet<ApuntesDetalleTema> ApuntesDetalleTemas { get; set; }
         public virtual DbSet<ApuntesTema> ApuntesTemas { get; set; }
-        public virtual DbSet<Cargo> Cargos { get; set; }
-        public virtual DbSet<Usuario> Usuarios { get; set; }
-        public virtual DbSet<UsuarioCargo> UsuarioCargos { get; set; }
 
         // Es necesario comentar esto para poder usar la autenticacion con JWT
         /*
@@ -38,7 +35,7 @@ namespace DataAccess.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
- 
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -51,7 +48,17 @@ namespace DataAccess.Models
             {
                 entity.ToTable("apuntes_categoria");
 
+                entity.HasIndex(e => e.Titulo, "apuntes_categoria_titulo_UINDEX")
+                    .IsUnique();
+
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Logo).HasColumnName("logo");
+
+                entity.Property(e => e.TipoLogo)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("tipo_logo");
 
                 entity.Property(e => e.Titulo)
                     .IsRequired()
@@ -63,6 +70,9 @@ namespace DataAccess.Models
             modelBuilder.Entity<ApuntesDetalleTema>(entity =>
             {
                 entity.ToTable("apuntes_detalle_tema");
+
+                entity.HasIndex(e => e.Titulo, "apuntes_detalle_tema_titulo_UINDEX")
+                    .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -89,6 +99,9 @@ namespace DataAccess.Models
             {
                 entity.ToTable("apuntes_tema");
 
+                entity.HasIndex(e => e.Titulo, "apuntes_tema_titulo_UINDEX")
+                    .IsUnique();
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CategoriaId).HasColumnName("categoria_id");
@@ -106,77 +119,14 @@ namespace DataAccess.Models
                     .HasConstraintName("FK_tema_categoria");
             });
 
-            modelBuilder.Entity<Cargo>(entity =>
-            {
-                entity.ToTable("cargo");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Activo).HasColumnName("activo");
-
-                entity.Property(e => e.Authority)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("authority");
-
-                entity.Property(e => e.Descripcion)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("descripcion");
-
-                entity.Property(e => e.Visible).HasColumnName("visible");
-            });
-
-            modelBuilder.Entity<Usuario>(entity =>
-            {
-                entity.ToTable("usuario");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Activo).HasColumnName("activo");
-
-                entity.Property(e => e.Password)
-                    .IsRequired()
-                    .HasMaxLength(1000)
-                    .IsUnicode(false)
-                    .HasColumnName("password");
-
-                entity.Property(e => e.Username)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("username");
-
-                entity.Property(e => e.Visible).HasColumnName("visible");
-            });
-
-            modelBuilder.Entity<UsuarioCargo>(entity =>
-            {
-                entity.ToTable("usuario_cargo");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.CargoId).HasColumnName("cargo_id");
-
-                entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
-
-                entity.HasOne(d => d.Cargo)
-                    .WithMany(p => p.UsuarioCargos)
-                    .HasForeignKey(d => d.CargoId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_usuario_cargo_cargo");
-
-                entity.HasOne(d => d.Usuario)
-                    .WithMany(p => p.UsuarioCargos)
-                    .HasForeignKey(d => d.UsuarioId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_usuario_cargo_usuario");
-            });
-
             // Es necesario comentar esto para poder usar la autenticacion con JWT
             /*
             modelBuilder.Entity<AspNetRole>(entity =>
             {
+                entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
+                    .IsUnique()
+                    .HasFilter("([NormalizedName] IS NOT NULL)");
+
                 entity.Property(e => e.Name).HasMaxLength(256);
 
                 entity.Property(e => e.NormalizedName).HasMaxLength(256);
@@ -184,9 +134,9 @@ namespace DataAccess.Models
 
             modelBuilder.Entity<AspNetRoleClaim>(entity =>
             {
-                entity.Property(e => e.RoleId)
-                    .IsRequired()
-                    .HasMaxLength(450);
+                entity.HasIndex(e => e.RoleId, "IX_AspNetRoleClaims_RoleId");
+
+                entity.Property(e => e.RoleId).IsRequired();
 
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.AspNetRoleClaims)
@@ -195,6 +145,12 @@ namespace DataAccess.Models
 
             modelBuilder.Entity<AspNetUser>(entity =>
             {
+                entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
+
+                entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
+                    .IsUnique()
+                    .HasFilter("([NormalizedUserName] IS NOT NULL)");
+
                 entity.Property(e => e.Email).HasMaxLength(256);
 
                 entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
@@ -206,9 +162,9 @@ namespace DataAccess.Models
 
             modelBuilder.Entity<AspNetUserClaim>(entity =>
             {
-                entity.Property(e => e.UserId)
-                    .IsRequired()
-                    .HasMaxLength(450);
+                entity.HasIndex(e => e.UserId, "IX_AspNetUserClaims_UserId");
+
+                entity.Property(e => e.UserId).IsRequired();
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.AspNetUserClaims)
@@ -219,9 +175,9 @@ namespace DataAccess.Models
             {
                 entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
 
-                entity.Property(e => e.UserId)
-                    .IsRequired()
-                    .HasMaxLength(450);
+                entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
+
+                entity.Property(e => e.UserId).IsRequired();
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.AspNetUserLogins)
@@ -231,6 +187,8 @@ namespace DataAccess.Models
             modelBuilder.Entity<AspNetUserRole>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.RoleId });
+
+                entity.HasIndex(e => e.RoleId, "IX_AspNetUserRoles_RoleId");
 
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.AspNetUserRoles)

@@ -200,7 +200,6 @@ export class ApuntesTema extends CargaVista
             fila.insertCell(1).innerHTML = "<textarea name='" + index + "' class='contenidos_detalles'> " + c.contenido + " </textarea>";
 
             fila.insertCell(2).innerHTML = "<button type='button' onclick='quitarApuntesDetalleTema(" + index + ")'> Remover </button>";
-            
         });
 
         tinymce.init({ 

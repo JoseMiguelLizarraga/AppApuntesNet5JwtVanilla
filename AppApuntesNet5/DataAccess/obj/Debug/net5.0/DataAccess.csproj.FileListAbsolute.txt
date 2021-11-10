@@ -12,3 +12,4 @@ C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\DataAccess\obj\Debug\net5.0\ref\DataAccess.dll
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\DataAccess\obj\Debug\net5.0\DataAccess.pdb
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\DataAccess\obj\Debug\net5.0\DataAccess.genruntimeconfig.cache
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\DataAccess\obj\Debug\net5.0\DataAccess.csprojAssemblyReference.cache

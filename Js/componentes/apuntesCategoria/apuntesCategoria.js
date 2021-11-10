@@ -101,8 +101,13 @@ export class ApuntesCategoria extends CargaVista
 						var fila = tabla.insertRow(0); 
 						fila.insertCell(0).innerHTML = c.id; 
 						fila.insertCell(1).innerHTML = c.titulo; 
-						fila.insertCell(2).innerHTML = "<a href='' onclick='editar(event, " + c.id + ")'> Editar </a>"; 
-						fila.insertCell(3).innerHTML = "<a href='javascript:;' onclick='eliminar(" + c.id + ")'> Eliminar </a>"; 
+						
+						fila.insertCell(2).innerHTML = (c.logo != null && c.tipoLogo != null) ? 
+							`<img src='${c.tipoLogo}, ${c.logo}' />` 
+							: "";
+
+						fila.insertCell(3).innerHTML = "<a href='' onclick='editar(event, " + c.id + ")'> Editar </a>"; 
+						fila.insertCell(4).innerHTML = "<a href='javascript:;' onclick='eliminar(" + c.id + ")'> Eliminar </a>"; 
 
 					}); 
 				}); 

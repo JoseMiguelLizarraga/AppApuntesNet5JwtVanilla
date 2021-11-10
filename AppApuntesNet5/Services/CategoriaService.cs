@@ -67,6 +67,38 @@ namespace Services
             return Lista.FirstOrDefault(x => x.Id == id);
         }
 
+        public async Task<(ApuntesCategorium, string)> GuardarLogo(ApuntesCategorium objeto)
+        {
+            try
+            {
+                using (var scope = scopeFactory.CreateScope())
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<AppApuntesNet5Context>();  // Esto es para acceder al ApplicationDbContext desde singleton
+
+                    ApuntesCategorium categoria = await db.ApuntesCategoria.FirstOrDefaultAsync(x => x.Id == objeto.Id);
+                    categoria.Logo = objeto.Logo;   // Es de tipo byte[]
+                    categoria.TipoLogo = objeto.TipoLogo;
+                    db.SaveChanges();
+
+                    // Actualiza el elemento de la lista unica
+                    ApuntesCategorium elementoLista = Lista.Where(x => x.Id == objeto.Id).FirstOrDefault();
+                    elementoLista.Logo = objeto.Logo;
+                    elementoLista.TipoLogo = objeto.TipoLogo;
+
+                    return (categoria, "");
+                }
+            }
+            catch (Exception ex)
+            {
+                var error = ex.InnerException != null && ex.InnerException.InnerException != null ?
+                    ex.InnerException.InnerException.Message :  // Lanza errores SQL 
+                    ex.Message;
+
+                return (null, error);
+            }
+
+        }
+
         public async Task<(ApuntesCategorium, string)> Guardar(ApuntesCategorium objeto)
         {
             if (!ValidarApuntesCategoria(objeto, out string error))

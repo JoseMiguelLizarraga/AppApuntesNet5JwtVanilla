@@ -9,11 +9,12 @@ using System.Linq;
 using DataAccess.Models;
 using Mappings;
 using Services;
+using Newtonsoft.Json;
 
 namespace AppApuntesNet5.Controllers
 {
     [ApiController]
-    [Route("ApuntesCategoria")]
+    [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ApuntesCategoriaController : ControllerBase
     {
@@ -30,7 +31,6 @@ namespace AppApuntesNet5.Controllers
         [Route("llenarDataTable")]
         public IActionResult llenarDataTable([FromQuery] ApuntesCategoriaDTO dto, int start, int length)
         {
-            //ApuntesCategorium apuntesCategoria = dto.ToDatabaseObject();
             DataTableDTO respuesta = _servicio.LlenarDataTableApuntesCategoria(dto.ToDatabaseObject(), start, length);
             return Ok(respuesta);
         }
@@ -77,5 +77,39 @@ namespace AppApuntesNet5.Controllers
             if (!result.Item1) return BadRequest(result.Item2);
             return Ok();
         }
+
+        [HttpPost("agregarLogo")]
+        public async Task<ActionResult<ApuntesCategoriaDTO>> AgregarLogo(ApuntesCategoriaDTO dto)
+        {
+            (ApuntesCategorium, string) result = await _servicio.GuardarLogo(dto.ToDatabaseObject());
+
+            if (string.IsNullOrEmpty(result.Item2))
+                return Ok(result.Item1.ToDTO());
+            else
+                return StatusCode(500, result.Item2);
+        }
     }
 }
+
+/*
+// Ejemplo de como guardar un logo
+
+fetch("https://localhost:44322/api/apuntesCategoria/agregarLogo", {
+	method: "POST",
+	headers: {"Accept": "application/json", "Content-Type": "application/json"},
+	body: JSON.stringify({
+        "id": 4, 
+        "logo": "iVBORw0KGgoAAAANSUhEUgAAABMAAAAQCAIAAAB7ptM1AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAB1SURBVDhPzY3LDYAwDEM7CEf234wZiqmjkF+L4MRTL3b81Na/UpvNI62naDE9tt2+Uo6V1a7vBuw5UFzGOWuEV87IHXCYaYpMBy9M9rL+k5llLWW9MLkjGmU68CHJ9q1MMJODBmIGWc4aKCqAqUVaT90+0/sJIs82uSJwNb0AAAAASUVORK5CYII=",
+        "tipoLogo": "data:image/png;base64"
+    })
+})
+.then(response => 
+{
+	if(response.ok) {
+		response.json().then(data => console.log(data));
+	} 
+	else {
+		response.text().then(textoError => alert(textoError));
+	}
+}); 
+*/

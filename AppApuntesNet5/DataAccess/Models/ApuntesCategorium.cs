@@ -14,6 +14,8 @@ namespace DataAccess.Models
 
         public int Id { get; set; }
         public string Titulo { get; set; }
+        public byte[] Logo { get; set; }
+        public string TipoLogo { get; set; }
 
         public virtual ICollection<ApuntesTema> ApuntesTemas { get; set; }
     }

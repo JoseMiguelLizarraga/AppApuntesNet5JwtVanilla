@@ -36,7 +36,7 @@ export class Login extends CargaVista
         if (username == "") {  return alert("Es necesario colocar el username");  }
         if (password == "") {  return alert("Es necesario colocar el password");  }
         
-        fetch(url + "/login", {
+        fetch(url + "/account/login", {    
             method: "POST",
             headers: {"Accept": "application/json", "Content-Type": "application/json"},
             body: JSON.stringify({"username": username, "password": password})

@@ -15,5 +15,6 @@ namespace Services
         public Task<(ApuntesCategorium, string)> Guardar(ApuntesCategorium objeto);
         public Task<(ApuntesCategorium, string)> Actualizar(ApuntesCategorium apuntesCategoria);
         public Task<(bool, string)> Eliminar(int id);
+        public Task<(ApuntesCategorium, string)> GuardarLogo(ApuntesCategorium objeto);
     }
 }
