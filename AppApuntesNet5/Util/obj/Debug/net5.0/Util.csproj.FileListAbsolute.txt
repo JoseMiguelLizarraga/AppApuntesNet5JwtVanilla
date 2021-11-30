@@ -9,3 +9,4 @@ C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Util\obj\Debug\net5.0\Util.dll
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Util\obj\Debug\net5.0\ref\Util.dll
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Util\obj\Debug\net5.0\Util.pdb
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Util\obj\Debug\net5.0\Util.csproj.AssemblyReference.cache

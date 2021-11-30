@@ -13,8 +13,8 @@ namespace Services
         public Task<List<ApuntesDetalleTema>> Listar();
         public Task<ApuntesDetalleTema> BuscarPorId(int id);
         public Task<DataTableDTO> LlenarDataTableApuntesDetalleTema(ApuntesDetalleTema apuntesDetalleTema, int inicio, int registrosPorPagina);
-        public Task<(ApuntesDetalleTema, ExcepcionCapturada)> Guardar(ApuntesDetalleTema apuntesDetalleTema);
-        public Task<(ApuntesDetalleTema, ExcepcionCapturada)> Actualizar(ApuntesDetalleTema apuntesDetalleTema);
+        public Task<RespuestaService<ApuntesDetalleTema>> Guardar(ApuntesDetalleTema apuntesDetalleTema);  
+        public Task<RespuestaService<ApuntesDetalleTema>> Actualizar(ApuntesDetalleTema apuntesDetalleTema);
         public Task<(bool, string)> Eliminar(int id);
         public bool ValidarApuntesDetalleTema(ApuntesDetalleTema apuntesDetalleTema, out string mensajeError);
     }

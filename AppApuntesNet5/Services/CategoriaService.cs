@@ -30,7 +30,7 @@ namespace Services
             }
         }
 
-        public DataTableDTO LlenarDataTableApuntesCategoria(ApuntesCategorium apuntesCategoria, int inicio, int registrosPorPagina)
+        public RespuestaService<DataTableDTO> LlenarDataTableApuntesCategoria(ApuntesCategorium apuntesCategoria, int inicio, int registrosPorPagina)
         {
             if (apuntesCategoria == null) apuntesCategoria = new ApuntesCategorium();  // En caso de que sea nulo se inicializa 
 
@@ -41,34 +41,42 @@ namespace Services
 
             List<ApuntesCategorium> lista = consulta.OrderBy(x => x.Id).Skip(inicio).Take(registrosPorPagina).ToList();
 
-            return new DataTableDTO()
+            return new RespuestaService<DataTableDTO>()
             {
-                RecordsFiltered = Lista.Count,
-                RecordsTotal = Lista.Count,
-                Data = lista.Select(Mapper.ToDTO).ToList()
+                Objeto = new DataTableDTO()
+                {
+                    RecordsFiltered = Lista.Count,
+                    RecordsTotal = Lista.Count,
+                    Data = lista.Select(Mapper.ToDTO).ToList()
+                }
             };
         }
 
-        public Select2DTO LlenarSelect2(string busqueda, int registrosPorPagina, int numeroPagina)
+        public RespuestaService<Select2DTO> LlenarSelect2(string busqueda, int registrosPorPagina, int numeroPagina)
         {
             IQueryable<ApuntesCategorium> consulta = Lista.AsQueryable();
 
             if (!string.IsNullOrEmpty(busqueda))
                 consulta = consulta.Where(a => a.Titulo.ToLower().Contains(busqueda.ToLower()));
 
-            return new Select2DTO()
+            return new RespuestaService<Select2DTO>()
             {
-                Total = Lista.Count,
-                Results = consulta.Skip((numeroPagina - 1) * registrosPorPagina).Take(registrosPorPagina).Select(a => new { id = a.Id, text = a.Titulo }).ToList()
+                Objeto = new Select2DTO()
+                {
+                    Total = Lista.Count,
+                    Results = consulta.Skip((numeroPagina - 1) * registrosPorPagina).Take(registrosPorPagina).Select(a => new { id = a.Id, text = a.Titulo }).ToList()
+                }
             };
         }
 
-        public ApuntesCategorium BuscarPorId(int id)
+        public RespuestaService<ApuntesCategorium> BuscarPorId(int id)
         {
-            return Lista.FirstOrDefault(x => x.Id == id);
+            ApuntesCategorium categoria = Lista.FirstOrDefault(x => x.Id == id);
+            return new RespuestaService<ApuntesCategorium>() { Objeto = categoria };
         }
 
-        public async Task<(ApuntesCategorium, ExcepcionCapturada)> GuardarLogo(ApuntesCategorium objeto)
+  
+        public async Task<RespuestaService<ApuntesCategorium>> GuardarLogo(ApuntesCategorium objeto)
         {
             try
             {
@@ -86,19 +94,19 @@ namespace Services
                     elementoLista.Logo = objeto.Logo;
                     elementoLista.TipoLogo = objeto.TipoLogo;
 
-                    return (categoria, null);
+                    return new RespuestaService<ApuntesCategorium>() { Objeto = categoria };
                 }
             }
             catch (Exception ex)
             {
-                return (null, ExcepcionesHelper.ObtenerExcepcion(ex));
+                return new RespuestaService<ApuntesCategorium>() { ExcepcionCapturada = ExcepcionesHelper.ObtenerExcepcion(ex) };
             }
         }
 
-        public async Task<(ApuntesCategorium, ExcepcionCapturada)> Guardar(ApuntesCategorium objeto)
+        public async Task<RespuestaService<ApuntesCategorium>> Guardar(ApuntesCategorium objeto)
         {
             if (!ValidarApuntesCategoria(objeto, out string error))
-                return (null, ExcepcionesHelper.GenerarExcepcion(error, 400));
+                return new RespuestaService<ApuntesCategorium>() { ExcepcionCapturada = ExcepcionesHelper.GenerarExcepcion(error, 400) };
 
             using (var scope = scopeFactory.CreateScope())
             {
@@ -118,7 +126,7 @@ namespace Services
 
                         Lista.Add(apuntesCategoria);   // Se agrega a la lista unica
 
-                        return (apuntesCategoria, null);
+                        return new RespuestaService<ApuntesCategorium>() { Objeto = apuntesCategoria };
                     }
                     catch (Exception ex)
                     {
@@ -126,23 +134,22 @@ namespace Services
 
                         ExcepcionCapturada excepcion = ExcepcionesHelper.ObtenerExcepcion(ex);
 
-                        if (excepcion.MensajeError.Contains("duplicate key")) 
+                        if (excepcion.MensajeError.Contains("duplicate key"))
                         {
                             excepcion.MensajeError = "El título de la categoría debe ser único e irrepetible";
                             excepcion.Status = 400;
-                        }   
+                        }
 
-                        return (null, excepcion);
+                        return new RespuestaService<ApuntesCategorium>() { ExcepcionCapturada = excepcion };
                     }
                 }
             }
         }
 
-
-        public async Task<(ApuntesCategorium, ExcepcionCapturada)> Actualizar(ApuntesCategorium apuntesCategoria)
+        public async Task<RespuestaService<ApuntesCategorium>> Actualizar(ApuntesCategorium apuntesCategoria)
         {
             if (!ValidarApuntesCategoria(apuntesCategoria, out string error))
-                return (null, ExcepcionesHelper.GenerarExcepcion(error, 400));
+                return new RespuestaService<ApuntesCategorium>() { ExcepcionCapturada = ExcepcionesHelper.GenerarExcepcion(error, 400) };
 
             using (var scope = scopeFactory.CreateScope())
             {
@@ -164,7 +171,7 @@ namespace Services
                         ApuntesCategorium elementoLista = Lista.Where(x => x.Id == objeto.Id).FirstOrDefault();
                         elementoLista.Titulo = objeto.Titulo;
 
-                        return (apuntesCategoria, null);
+                        return new RespuestaService<ApuntesCategorium>() { Objeto = apuntesCategoria };
                     }
                     catch (Exception ex)
                     {
@@ -178,7 +185,7 @@ namespace Services
                             excepcion.Status = 400;
                         }
 
-                        return (null, excepcion);
+                        return new RespuestaService<ApuntesCategorium>() { ExcepcionCapturada = excepcion };
                     }
                 }
             }

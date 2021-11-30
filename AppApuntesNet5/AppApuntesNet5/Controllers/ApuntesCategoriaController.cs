@@ -32,52 +32,57 @@ namespace AppApuntesNet5.Controllers
         [Route("llenarDataTable")]
         public IActionResult llenarDataTable([FromQuery] ApuntesCategoriaDTO dto, int start, int length)
         {
-            DataTableDTO respuesta = _servicio.LlenarDataTableApuntesCategoria(dto.ToDatabaseObject(), start, length);
-            return Ok(respuesta);
+            RespuestaService<DataTableDTO> respuesta = _servicio.LlenarDataTableApuntesCategoria(dto.ToDatabaseObject(), start, length);
+            return Ok(respuesta.Objeto);
         }
 
         [HttpGet]
         [Route("llenarSelect2")]
         public ActionResult<Select2DTO> LlenarSelect2(string busqueda, int registrosPorPagina, int numeroPagina)
         {
-            return _servicio.LlenarSelect2(busqueda, registrosPorPagina, numeroPagina);
+            return _servicio.LlenarSelect2(busqueda, registrosPorPagina, numeroPagina).Objeto;
         }
 
         [HttpGet]
         [Route("{id:int}")]
         public ActionResult<ApuntesCategoriaDTO> BuscarPorId(int id)
         {
-            return _servicio.BuscarPorId(id).ToDTO();
+            var respuesta = _servicio.BuscarPorId(id);
+
+            if (respuesta.Objeto != null)
+                return Ok(respuesta.Objeto.ToDTO());
+            else
+                return BadRequest();
         }
 
         [HttpPost]
         public async Task<ActionResult<ApuntesCategoriaDTO>> Post(ApuntesCategoriaDTO dto)
         {
-            (ApuntesCategorium, ExcepcionCapturada) result = await _servicio.Guardar(dto.ToDatabaseObject());
+            RespuestaService<ApuntesCategorium> result = await _servicio.Guardar(dto.ToDatabaseObject());
 
-            if (result.Item1 != null)
-                return Ok(result.Item1.ToDTO());
+            if (result.Objeto != null)
+                return Ok(result.Objeto.ToDTO());
 
-            else if (result.Item2.Status == 400)
-                return BadRequest(result.Item2.MensajeError);
+            else if (result.ExcepcionCapturada.Status == 400)
+                return BadRequest(result.ExcepcionCapturada.MensajeError);
 
             else
-                return StatusCode(500, $"Se encontró un error: {result.Item2.MensajeError}");
+                return StatusCode(500, $"Se encontró un error: {result.ExcepcionCapturada.MensajeError}");
         }
 
         [HttpPut]
         public async Task<ActionResult<ApuntesCategoriaDTO>> Put(ApuntesCategoriaDTO dto)
         {
-            (ApuntesCategorium, ExcepcionCapturada) result = await _servicio.Actualizar(dto.ToDatabaseObject());
+            RespuestaService<ApuntesCategorium> result = await _servicio.Actualizar(dto.ToDatabaseObject());
 
-            if (result.Item1 != null)
-                return Ok(result.Item1.ToDTO());
+            if (result.Objeto != null)
+                return Ok(result.Objeto.ToDTO());
 
-            else if (result.Item2.Status == 400)
-                return BadRequest(result.Item2.MensajeError);
+            else if (result.ExcepcionCapturada.Status == 400)
+                return BadRequest(result.ExcepcionCapturada.MensajeError);
 
             else
-                return StatusCode(500, $"Se encontró un error: {result.Item2.MensajeError}");
+                return StatusCode(500, $"Se encontró un error: {result.ExcepcionCapturada.MensajeError}");
         }
 
         [HttpDelete("{id}")]
@@ -94,16 +99,16 @@ namespace AppApuntesNet5.Controllers
         [HttpPost("agregarLogo")]
         public async Task<ActionResult<ApuntesCategoriaDTO>> AgregarLogo(ApuntesCategoriaDTO dto)
         {
-            (ApuntesCategorium, ExcepcionCapturada) result = await _servicio.GuardarLogo(dto.ToDatabaseObject());
+            RespuestaService<ApuntesCategorium> result = await _servicio.GuardarLogo(dto.ToDatabaseObject());
 
-            if (result.Item1 != null)
-                return Ok(result.Item1.ToDTO());
+            if (result.Objeto != null)
+                return Ok(result.Objeto.ToDTO());
 
-            else if (result.Item2.Status == 400)
-                return BadRequest(result.Item2.MensajeError);
+            else if (result.ExcepcionCapturada.Status == 400)
+                return BadRequest(result.ExcepcionCapturada.MensajeError);
 
             else
-                return StatusCode(500, $"Se encontró un error: {result.Item2.MensajeError}");
+                return StatusCode(500, $"Se encontró un error: {result.ExcepcionCapturada.MensajeError}");
         }
     }
 }

@@ -84,10 +84,10 @@ namespace Services
             return new Select2DTO() { Total = cantidadRegistros, Results = dataSalida };
         }
 
-        public async Task<(ApuntesTema, ExcepcionCapturada)> Guardar(ApuntesTema apuntesTema)
+        public async Task<RespuestaService<ApuntesTema>> Guardar(ApuntesTema apuntesTema)
         {
             if (!ValidarApuntesTema(apuntesTema, out string error))
-                return (null, ExcepcionesHelper.GenerarExcepcion(error, 400));
+                return new RespuestaService<ApuntesTema>() { ExcepcionCapturada = ExcepcionesHelper.GenerarExcepcion(error, 400) };
 
             apuntesTema.CategoriaId = apuntesTema.Categoria.Id;
             apuntesTema.Categoria = null;
@@ -109,8 +109,7 @@ namespace Services
 
                     await db.SaveChangesAsync();
                     await dbContextTransaction.CommitAsync();
-                    return (apuntesTema, null);
-
+                    return new RespuestaService<ApuntesTema>() { Objeto = apuntesTema };
                 }
                 catch (Exception ex)
                 {
@@ -124,15 +123,15 @@ namespace Services
                         excepcion.Status = 400;
                     }
 
-                    return (null, excepcion);
+                    return new RespuestaService<ApuntesTema>() { ExcepcionCapturada = excepcion };
                 }
             }
         }
 
-        public async Task<(ApuntesTema, ExcepcionCapturada)> Actualizar(ApuntesTema apuntesTema)
+        public async Task<RespuestaService<ApuntesTema>> Actualizar(ApuntesTema apuntesTema)
         {
             if (!ValidarApuntesTema(apuntesTema, out string error))
-                return (null, ExcepcionesHelper.GenerarExcepcion(error, 400));
+                return new RespuestaService<ApuntesTema>() { ExcepcionCapturada = ExcepcionesHelper.GenerarExcepcion(error, 400) };
 
             using (var dbContextTransaction = db.Database.BeginTransaction())
             {
@@ -191,7 +190,8 @@ namespace Services
 
                     await db.SaveChangesAsync();
                     await dbContextTransaction.CommitAsync();
-                    return (apuntesTema, null);
+
+                    return new RespuestaService<ApuntesTema>() { Objeto = apuntesTema };
                 }
                 catch (Exception ex)
                 {
@@ -205,7 +205,7 @@ namespace Services
                         excepcion.Status = 400;
                     }
 
-                    return (null, excepcion);
+                    return new RespuestaService<ApuntesTema>() { ExcepcionCapturada = excepcion };
                 }
             }
         }

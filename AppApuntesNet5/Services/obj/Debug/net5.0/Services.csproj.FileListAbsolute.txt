@@ -6,7 +6,6 @@ C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\bin\Debug\net5.0\Mappings.dll
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\bin\Debug\net5.0\DataAccess.pdb
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\bin\Debug\net5.0\Mappings.pdb
-C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\obj\Debug\net5.0\Services.csprojAssemblyReference.cache
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\obj\Debug\net5.0\Services.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\obj\Debug\net5.0\Services.AssemblyInfoInputs.cache
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\obj\Debug\net5.0\Services.AssemblyInfo.cs
@@ -17,3 +16,4 @@ C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\obj\Debug\net5.0\Services.pdb
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\bin\Debug\net5.0\Util.dll
 C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\bin\Debug\net5.0\Util.pdb
+C:\Users\josel\Documents\Aprendiendo .NET\AppApuntesNet5JwtVanilla\AppApuntesNet5\Services\obj\Debug\net5.0\Services.csproj.AssemblyReference.cache

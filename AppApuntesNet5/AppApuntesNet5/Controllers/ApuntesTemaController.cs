@@ -58,31 +58,31 @@ namespace AppApuntesNet5.Controllers
         [HttpPost]
         public async Task<ActionResult<ApuntesTemaDTO>> Post(ApuntesTemaDTO dto)
         {
-            (ApuntesTema, ExcepcionCapturada) result = await _servicio.Guardar(dto.ToDatabaseObject());
+            RespuestaService<ApuntesTema> result = await _servicio.Guardar(dto.ToDatabaseObject());
 
-            if (result.Item1 != null)
-                return Ok(result.Item1.ToDTO());
+            if (result.Objeto != null)
+                return Ok(result.Objeto.ToDTO());
 
-            else if (result.Item2.Status == 400)
-                return BadRequest(result.Item2.MensajeError);
+            else if (result.ExcepcionCapturada.Status == 400)
+                return BadRequest(result.ExcepcionCapturada.MensajeError);
 
             else
-                return StatusCode(500, $"Se encontró un error: {result.Item2.MensajeError}");
+                return StatusCode(500, $"Se encontró un error: {result.ExcepcionCapturada.MensajeError}");
         }
 
         [HttpPut]
         public async Task<ActionResult<ApuntesTemaDTO>> Put(ApuntesTemaDTO dto)
         {
-            (ApuntesTema, ExcepcionCapturada) result = await _servicio.Actualizar(dto.ToDatabaseObject());
+            RespuestaService<ApuntesTema> result = await _servicio.Actualizar(dto.ToDatabaseObject());
 
-            if (result.Item1 != null)
-                return Ok(result.Item1.ToDTO());
+            if (result.Objeto != null)
+                return Ok(result.Objeto.ToDTO());
 
-            else if (result.Item2.Status == 400)
-                return BadRequest(result.Item2.MensajeError);
+            else if (result.ExcepcionCapturada.Status == 400)
+                return BadRequest(result.ExcepcionCapturada.MensajeError);
 
             else
-                return StatusCode(500, $"Se encontró un error: {result.Item2.MensajeError}");
+                return StatusCode(500, $"Se encontró un error: {result.ExcepcionCapturada.MensajeError}");
         }
 
         [HttpDelete("{id}")]
